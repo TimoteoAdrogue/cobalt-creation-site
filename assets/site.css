@@ -42,6 +42,9 @@
 }
 
 html { -webkit-text-size-adjust: 100%; }
+/* le surlignage gris du toucher n'a rien à faire ici : chaque élément
+   touché répond déjà par son propre ressort */
+a, button, label, input, textarea { -webkit-tap-highlight-color: transparent; }
 body { overflow-x: clip; }
 img { max-width: 100%; }
 ::selection { background: var(--or); color: var(--encre-nuit); }
