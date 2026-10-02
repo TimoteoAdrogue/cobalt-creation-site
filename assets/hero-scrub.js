@@ -149,15 +149,41 @@ function onScroll() {
 }
 
 /* ---------------------------------------------------------
-   Le chargement : on rapatrie le fichier entier avant de
-   scruber. Un seek qui doit attendre le réseau saccade ;
-   un seek dans un blob local est immédiat.
+   Le chargement, en deux temps.
+
+   Le blob reste la cible : un seek dans un fichier entièrement
+   en mémoire est immédiat, et c'est lui qui donne les 60 img/s.
+   Mais l'attendre pour commencer coûte dix secondes de poster
+   figé sur un hébergeur distant — mesuré sur GitHub Pages :
+   le film ne prenait la main qu'à la douzième seconde, après
+   que le visiteur a déjà défilé.
+
+   Donc : on branche d'abord le fichier en direct (les seeks
+   passent par des requêtes de plage, ça bouge tout de suite),
+   et on bascule sur le blob quand il est descendu. Le fetch
+   relit la réponse déjà en cache HTTP, le fichier ne descend
+   pas deux fois.
    --------------------------------------------------------- */
 var heroLance = false;
+
+/* Une bascule de src laisse un seek orphelin : son 'seeked'
+   n'arrivera jamais et la file resterait bloquée. */
+function attachSource(src, seekTo) {
+  seekBusy = false; pendingTime = null;
+  video.src = src;
+  video.load();
+  video.addEventListener('loadeddata', function () {
+    requestSeek((seekTo !== null ? seekTo : heroProgress() * video.duration) || 0);
+    stage.classList.add('video-ready');
+  }, { once: true });
+}
 
 function initHeroOnce() {
   if (heroLance) return;
   heroLance = true;
+
+  video.preload = 'auto';
+  attachSource(VIDEO_URL, null);
 
   var ctrl = new AbortController();
   var watchdog = setTimeout(function () { ctrl.abort(); }, 20000);
@@ -177,14 +203,14 @@ function initHeroOnce() {
       });
     })().then(function () {
       clearTimeout(watchdog);
-      video.src = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
-      video.load();
-      video.addEventListener('canplay', function () {
-        requestSeek(heroProgress() * video.duration);
-        stage.classList.add('video-ready');
-      }, { once: true });
+      attachSource(URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' })),
+                   video.currentTime);
     });
-  }).catch(failVideo);
+  }).catch(function () {
+    /* Le direct joue déjà : le blob n'est qu'un confort, son échec
+       ne doit pas renvoyer le héro sur l'image fixe. */
+    if (!video.readyState) failVideo();
+  });
 }
 
 /* ---------------------------------------------------------
