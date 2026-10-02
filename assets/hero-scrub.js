@@ -28,7 +28,15 @@ var smoothstep = function (p, e0, e1) {
   return t * t * (3 - 2 * t);
 };
 
-var VIDEO_URL = 'assets/hero-scrub.mp4';
+/* Deux films, choisis une fois, au lancement du scrub.
+   L'écran tenu droit reçoit sa propre coupe verticale :
+   506 x 900, 30 img/s, crf 24, 4,6 Mo au lieu de 24. Le
+   téléphone ne décode plus que les pixels qu'il affiche, et le
+   film descend en quelques secondes sur un réseau mobile.
+   Encodage dans NOTE-ENCODAGE en bas de fichier. */
+var VIDEO_URL_LARGE = 'assets/hero-scrub.mp4';
+var VIDEO_URL_PHONE = 'assets/hero-scrub-phone.mp4';
+var mqVertical = matchMedia('(orientation: portrait)');
 
 var hero   = document.getElementById('hero');
 var stage  = document.querySelector('.stage');
@@ -109,7 +117,13 @@ function majBandes(p) {
 
     var k = clamp((p - b.a) / Math.max(0.001, (b.b - b.a) * 0.4), 0, 1);
 
-    if (Math.abs(op - b.op) > 0.006) { b.op = op; b.el.style.opacity = op.toFixed(3); }
+    if (Math.abs(op - b.op) > 0.006) {
+      b.op = op;
+      b.el.style.opacity = op.toFixed(3);
+      /* Une bande éteinte ne capte pas le doigt : sans cela, le lien
+         d'une bande invisible restait cliquable au toucher. */
+      b.el.style.visibility = op > 0.01 ? '' : 'hidden';
+    }
     if (Math.abs(k - b.k) > 0.008)  { b.k = k;  b.el.style.setProperty('--k', k.toFixed(3)); }
   }
 
@@ -174,14 +188,43 @@ function attachSource(src, seekTo) {
   video.load();
   video.addEventListener('loadeddata', function () {
     requestSeek((seekTo !== null ? seekTo : heroProgress() * video.duration) || 0);
+    stage.classList.remove('video-failed');
     stage.classList.add('video-ready');
   }, { once: true });
+  amorcer();
 }
+
+/* Safari sur iPhone ne charge ni n'affiche les images d'un film
+   qui n'a jamais joué, même muet. Un play() aussitôt suivi d'un
+   pause() le réveille ; ailleurs, c'est sans effet visible. */
+function amorcer() {
+  var p;
+  try { p = video.play(); } catch (e) { return; }
+  if (p && p.then) {
+    p.then(function () {
+      video.pause();
+      requestSeek(montre * (video.duration || 0));
+    }, function () { /* refusé (mode économie d'énergie) : on retente au toucher */ });
+  }
+}
+
+/* En mode économie d'énergie, iOS refuse toute lecture sans geste :
+   le premier toucher du visiteur sert alors de geste. */
+function amorcerAuToucher() {
+  if (video.readyState >= 2) {
+    window.removeEventListener('touchend', amorcerAuToucher);
+    return;
+  }
+  if (scrubOn && video.currentSrc) amorcer();
+}
+window.addEventListener('touchend', amorcerAuToucher, { passive: true });
 
 function initHeroOnce() {
   if (heroLance) return;
   heroLance = true;
 
+  var VIDEO_URL = mqVertical.matches ? VIDEO_URL_PHONE : VIDEO_URL_LARGE;
+  video.muted = true;
   video.preload = 'auto';
   attachSource(VIDEO_URL, null);
 
@@ -229,10 +272,10 @@ io.observe(hero);
    Les portes du repli, décidées en direct et réévaluées
    si l'appareil tourne ou si la préférence change.
    --------------------------------------------------------- */
+/* Le téléphone tenu droit a désormais son film : il n'est plus
+   renvoyé sur l'image fixe. Restent sur l'image fixe le téléphone
+   couché, trop bas pour la typographie, et le mouvement réduit. */
 var GATES = [
-  '(max-width: 820px)',
-  '(orientation: portrait) and (max-width: 1024px)',
-  '(orientation: portrait) and (pointer: coarse)',
   '(orientation: landscape) and (pointer: coarse) and (max-height: 560px)',
   '(prefers-reduced-motion: reduce)'
 ];
@@ -262,6 +305,7 @@ function disableScrub() {
      inline l'emporte sur la feuille de style et le repli reste muet. */
   bands.forEach(function (b) {
     b.el.style.removeProperty('opacity');
+    b.el.style.removeProperty('visibility');
     b.el.style.removeProperty('--k');
     b.op = -1; b.k = -1;
   });
@@ -312,4 +356,19 @@ applyHeroMode();
    le poids : c'est lui qui décide si le visiteur voit le film.
 
    -an : pas de piste son, le héro est muet.
+
+   Le film des téléphones se tire du film large, coupe au centre
+   (le flacon, la feuille et le pinceau y tiennent du début à la
+   fin) :
+
+   ffmpeg -i hero-scrub.mp4 \
+     -vf "crop=506:900,fps=30" \
+     -c:v libx264 -profile:v high -level 4.0 -pix_fmt yuv420p \
+     -crf 24 -g 1 -keyint_min 1 -sc_threshold 0 -bf 0 \
+     -movflags +faststart -an \
+     hero-scrub-phone.mp4
+
+   4,6 Mo, SSIM 0,981 contre la même coupe du film large.
+   Son poster : hero-poster.jpg coupé au centre en 804 x 1428,
+   ramené à 720 de large (hero-poster-phone.jpg, 110 Ko).
    ========================================================= */
