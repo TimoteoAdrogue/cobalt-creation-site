@@ -15,6 +15,7 @@ const M = window.Motion;
 const doc = document.documentElement;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+const tactile = !fine;
 const large = () => matchMedia('(min-width: 1001px)').matches;
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -442,7 +443,9 @@ const lever = (mots, delai = 0) => {
   const milieu = () => {
     q = false;
     if (!vivant || tenu) return;
-    const c = innerHeight * 0.5;
+    // au téléphone, la ligne de lecture se tient sous le cadre qui colle en haut
+    const bas = large() ? 0 : $('.gestes-cadre', sec).getBoundingClientRect().bottom;
+    const c = large() ? innerHeight * 0.5 : bas + (innerHeight - bas) * 0.38;
     for (let i = 0; i < lignes.length; i++) {
       const r = lignes[i].getBoundingClientRect();
       if (r.top <= c && r.bottom > c) { choisir(i); return; }
@@ -450,13 +453,13 @@ const lever = (mots, delai = 0) => {
     if (lignes[0].getBoundingClientRect().top > c) choisir(0);
   };
   const appliquer = () => {
-    vivant = large();
+    vivant = !reduce;
     sec.classList.toggle('vivant', vivant);
     milieu();
   };
   addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(milieu); } }, { passive: true });
   addEventListener('resize', appliquer);
-  lignes.forEach((li, i) => li.addEventListener('pointerenter', () => { if (vivant) { tenu = true; choisir(i); } }));
+  lignes.forEach((li, i) => li.addEventListener('pointerenter', () => { if (vivant && fine && large()) { tenu = true; choisir(i); } }));
   $('.gestes-liste', sec).addEventListener('pointerleave', () => { tenu = false; milieu(); });
   appliquer();
 })();
@@ -494,7 +497,7 @@ const lever = (mots, delai = 0) => {
   };
 
   const mesurer = () => {
-    epingle = large() && !reduce && innerHeight >= 560;
+    epingle = !reduce && innerHeight >= 460;
     gal.classList.toggle('epingle', epingle);
     if (aide) aide.textContent = epingle ? 'Faites défiler' : 'Faites glisser';
     if (!epingle) {
@@ -504,7 +507,9 @@ const lever = (mots, delai = 0) => {
       return;
     }
     dist = Math.max(0, piste.scrollWidth - scene.clientWidth);
-    gal.style.height = (dist + innerHeight) + 'px';
+    // la hauteur de la scène (100svh) et non celle de la fenêtre : sur iPhone,
+    // la barre d'adresse qui se replie ne doit pas faire sauter la page
+    gal.style.height = (dist + scene.clientHeight) + 'px';
     geo = cartes.map(c => ({ left: c.offsetLeft, w: c.offsetWidth }));
     developper();
   };
@@ -529,7 +534,12 @@ const lever = (mots, delai = 0) => {
   }, { passive: true });
 
   mesurer();
-  addEventListener('resize', mesurer);
+  let lw = innerWidth;
+  addEventListener('resize', () => {
+    // seule la largeur compte : la hauteur bouge à chaque repli de la barre d'adresse
+    if (tactile && innerWidth === lw) return;
+    lw = innerWidth; mesurer();
+  });
   addEventListener('load', mesurer);
   if (document.fonts) document.fonts.ready.then(mesurer).catch(() => {});
 })();
@@ -555,6 +565,19 @@ const lever = (mots, delai = 0) => {
       ty = clamp((e.clientY - b.top) / b.height, -0.15, 1.15);
       bouge = performance.now();
     }, { passive: true });
+  }
+
+  if (tactile) {
+    const aide = $('.lampe-aide', lampe);
+    if (aide) aide.textContent = 'Touchez la pièce';
+    const doigt = e => {
+      const t = e.touches[0], b = plaque.getBoundingClientRect();
+      tx = clamp((t.clientX - b.left) / b.width, -0.15, 1.15);
+      ty = clamp((t.clientY - b.top) / b.height, -0.15, 1.15);
+      bouge = performance.now();
+    };
+    plaque.addEventListener('touchstart', doigt, { passive: true });
+    plaque.addEventListener('touchmove', doigt, { passive: true });
   }
 
   const image = t => {
@@ -644,6 +667,50 @@ const lever = (mots, delai = 0) => {
   }
 })();
 
+/* ---- 12b. Les métiers, au pouce ------------------------------------------
+   Sans pointeur, la ligne qui passe sous le pouce prend la lumière et son
+   image monte dans la colonne qui lui est réservée : rien ne pousse rien,
+   la page ne bouge pas sous le doigt. */
+(() => {
+  const sec = $('.metiers'); if (!sec || reduce || (fine && large())) return;
+  const lignes = $$('.metier', sec); if (!lignes.length) return;
+  sec.classList.add('vivant');
+  let actif = -1, q = false;
+  const choisir = i => {
+    if (i === actif) return;
+    if (actif >= 0) {
+      const v = lignes[actif];
+      v.classList.remove('actif');
+      M.animate($('.metier-img', v), { clipPath: ['inset(0% 0% 0% 0%)', 'inset(0% 0% 100% 0%)'] }, { duration: 0.6, ease: RIDEAU });
+      M.animate($('.metier-titre', v), { x: 0 }, POSE);
+    }
+    actif = i;
+    if (i < 0) return;
+    const n = lignes[i], im = $('.metier-img', n);
+    n.classList.add('actif');
+    M.animate(im, { clipPath: ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'] }, { duration: 0.85, ease: RIDEAU });
+    M.animate($('img', im), { scale: [1.25, 1] }, { duration: 1.3, ease: [0.22, 0.61, 0.24, 1] });
+    M.animate($('.metier-titre', n), { x: [0, 8] }, PORTE);
+  };
+  const lire = () => {
+    q = false;
+    const c = innerHeight * 0.56;
+    let i = -1;
+    for (let k = 0; k < lignes.length; k++) {
+      const r = lignes[k].getBoundingClientRect();
+      if (r.top <= c && r.bottom > c) { i = k; break; }
+    }
+    if (i < 0) {
+      const premier = lignes[0].getBoundingClientRect(), dernier = lignes[lignes.length - 1].getBoundingClientRect();
+      if (dernier.bottom <= c && dernier.bottom > 0) i = lignes.length - 1;
+      else if (premier.top > c) i = -1;
+    }
+    choisir(i);
+  };
+  addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(lire); } }, { passive: true });
+  lire();
+})();
+
 /* ---- 13. Le curseur et les aimants ---------------------------------------
    Un disque nommé ne paraît que là où il y a quelque chose à faire :
    voir une pièce, entrer dans la galerie, porter la lampe. Les boutons
@@ -684,6 +751,52 @@ const lever = (mots, delai = 0) => {
     });
     el.addEventListener('pointerleave', () => M.animate(el, { x: 0, y: 0 }, DERIVE));
   }
+})();
+
+/* ---- 13b. Au toucher ----------------------------------------------------
+   Pas de curseur sur un téléphone : ce qui se touche répond au doigt, il
+   s'enfonce un peu et revient sur un ressort. */
+(() => {
+  if (!tactile || reduce) return;
+  const cibles = '.carte a, .metier, .nav-cta, .envoi, .suite, .piece, .lien-fleche, .rideau-menu li > a, .nav-menu, .haut, .pole, .chiffres > div';
+  let tenu = null;
+  const lacher = () => { if (tenu) { M.animate(tenu, { scale: 1 }, { type: 'spring', stiffness: 260, damping: 14, mass: 0.8 }); tenu = null; } };
+  document.addEventListener('pointerdown', e => {
+    const el = e.target.closest(cibles); if (!el) return;
+    tenu = el;
+    M.animate(el, { scale: 0.965 }, PORTE);
+  }, { passive: true });
+  for (const ev of ['pointerup', 'pointercancel']) document.addEventListener(ev, lacher, { passive: true });
+  addEventListener('scroll', lacher, { passive: true });
+})();
+
+/* ---- 13c. La section, dans la barre ---------------------------------------
+   Là où le rail n'a pas la place, la barre dit où l'on est : le nom de la
+   section monte à sa place quand on en change. */
+(() => {
+  if (!nav || reduce) return;
+  const secs = $$('.sec-head').map(h => ({ el: h.closest('section'), label: ($('.idx', h)?.textContent || '').trim() }))
+    .filter(s => s.el && s.label);
+  if (secs.length < 3) return;
+  const box = document.createElement('span'); box.className = 'nav-section'; box.setAttribute('aria-hidden', 'true');
+  const b = document.createElement('b'); box.append(b);
+  nav.insertBefore(box, $('.nav-menu', nav));
+  let act = -2, q = false;
+  const lire = () => {
+    q = false;
+    const y = innerHeight * 0.4;
+    let n = -1;
+    for (let i = 0; i < secs.length; i++) if (secs[i].el.getBoundingClientRect().top <= y) n = i;
+    if (n === act) return;
+    const monte = n > act;
+    act = n;
+    M.animate(b, { y: [0, monte ? '-110%' : '110%'], opacity: [1, 0] }, { duration: 0.22, ease: RIDEAU }).finished.then(() => {
+      b.textContent = n >= 0 ? secs[n].label : '';
+      M.animate(b, { y: [monte ? '110%' : '-110%', 0], opacity: [0, 1] }, POSE);
+    }).catch(() => {});
+  };
+  addEventListener('scroll', () => { if (!q) { q = true; requestAnimationFrame(lire); } }, { passive: true });
+  lire();
 })();
 
 /* ---- 14. Le rail --------------------------------------------------------

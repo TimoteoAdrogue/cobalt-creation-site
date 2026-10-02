@@ -172,6 +172,19 @@ html.ouverture::after {
   pointer-events: none;
 }
 
+/* au téléphone, le rail devient le nom de la section, au milieu de la barre */
+.nav-section {
+  display: none;
+  grid-column: 2; justify-self: center;
+  height: 1.1em; overflow: hidden;
+  font: 400 0.6rem/1.1 var(--sans); letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--encre-doux);
+  transition: opacity 400ms ease;
+}
+.nav-section b { display: block; font-weight: 400; white-space: nowrap; }
+.nav.sur-nuit .nav-section { color: var(--or); }
+.nav.menu-ouvert .nav-section { opacity: 0; }
+
 .nav.menu-ouvert {
   color: var(--craie);
   background: transparent;
@@ -206,6 +219,7 @@ html.ouverture::after {
   .nav { grid-template-columns: auto 1fr auto; }
   .nav nav, .nav-cta { display: none; }
   .nav-menu { display: inline-flex; grid-column: 3; }
+  .nav-section { display: block; }
 }
 
 /* ---------------------------------------------------------
@@ -619,6 +633,7 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
   opacity: 0; visibility: hidden;
 }
 .apercu img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+.metier-img { display: none; }
 
 /* ---------------------------------------------------------
    06 — L'ATELIER
@@ -797,18 +812,50 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
   .maison-bas { grid-template-columns: 1fr; }
   .chiffres { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2rem; }
 
-  .gestes-corps { grid-template-columns: 1fr; }
+  .gestes-corps { grid-template-columns: 1fr; gap: 0; }
   .gestes-cadre { display: none; }
   .geste-detail img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; margin-top: 1.4rem; }
-  .js .gestes.vivant .geste { opacity: 1; }
-  .js .gestes.vivant .geste.actif h3 { transform: none; }
+
+  /* avec le script : le cadre se tient en haut de l'écran, les gestes
+     passent dessous, et l'image change avec celui qui arrive en lecture */
+  .gestes.vivant .gestes-cadre {
+    display: block; order: -1;
+    position: sticky; top: var(--nav-h); z-index: 3;
+    margin: 0 calc(var(--gout) * -1);
+    padding: 0.9rem var(--gout) 0.2rem;
+    background: var(--craie);
+  }
+  .gestes.vivant .gestes-cadre::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 2.4rem;
+    background: linear-gradient(var(--craie), rgba(244, 241, 236, 0));
+    pointer-events: none;
+  }
+  .gestes.vivant .gestes-fenetre { height: min(36svh, 66vw); }
+  .gestes.vivant .gestes-compte { margin-top: 0.7rem; }
+  .gestes.vivant .geste-detail img { display: none; }
+  .js .gestes.vivant .geste.actif h3 { transform: translateX(0.5rem); }
 
   .methode-corps { grid-template-columns: 1fr; }
   .lampe { position: relative; top: 0; max-width: 560px; }
 
-  .metier { grid-template-columns: 2.6rem minmax(0, 1fr) 3rem; row-gap: 0.8rem; }
-  .metier-txt { grid-column: 2 / 4; grid-row: 2; }
-  .metier-fleche { grid-column: 3; grid-row: 1; }
+  /* une colonne réservée à l'image : elle s'ouvre sur la ligne en
+     lecture sans rien pousser, la page ne bouge pas sous le pouce */
+  .metier {
+    grid-template-columns: 2.2rem minmax(0, 1fr) minmax(0, 30%);
+    grid-template-areas: "num titre img" "num txt img" "num fleche img";
+    gap: 0.9rem 1.1rem; align-items: start;
+  }
+  .metier-num { grid-area: num; padding-top: 0.9em; }
+  .metier-titre { grid-area: titre; font-size: clamp(1.7rem, 6.6vw, 2.6rem); }
+  .metier-txt { grid-area: txt; font-size: 1.06rem; }
+  .metier-fleche { grid-area: fleche; justify-self: start; width: 2.2rem; margin-top: 0.4rem; }
+  .metier-img { display: block; grid-area: img; overflow: hidden; aspect-ratio: 4 / 5; background: rgba(244, 241, 236, 0.06); }
+  .metier-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .metiers.vivant .metier { opacity: 0.36; transition: opacity 600ms ease; }
+  .metiers.vivant .metier.actif { opacity: 1; }
+  .metiers.vivant .metier.actif .metier-fleche { width: 3.4rem; background: var(--or); }
+  .metiers.vivant .metier.actif .metier-fleche::after { color: var(--or); }
+  .metiers.vivant .metier-img { clip-path: inset(100% 0% 0% 0%); }
   .apercu { display: none; }
 
   .atelier-corps { grid-template-columns: 1fr; }
@@ -830,7 +877,7 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
   .pied-grille { grid-template-columns: 1fr; }
   .etapes { padding-left: 3rem; }
   .etape-n { left: -3rem; }
-  .etapes-ligne { display: none; }
+  .etapes .etapes-ligne, .etapes.vivant .etapes-ligne { left: calc(-3rem + 0.36rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
