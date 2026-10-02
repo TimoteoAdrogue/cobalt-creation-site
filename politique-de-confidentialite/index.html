@@ -6,35 +6,65 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Politique de confidentialité | Cobalt Création</title>
 <meta name="description" content="Politique de confidentialité de Cobalt Création, conforme au RGPD : données recueillies, usage, droits des utilisateurs et cookies.">
-<meta name="theme-color" content="#02374F">
+<meta name="theme-color" content="#011E2C">
 <link rel="canonical" href="https://www.cobaltcreation.com/politique-de-confidentialite">
 <link rel="icon" href="../assets/img/logo-cobalt.png" type="image/png">
+<link rel="preload" href="../assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/hero.css">
-<link rel="stylesheet" href="../assets/sections.css">
+<link rel="stylesheet" href="../assets/site.css">
 <link rel="stylesheet" href="../assets/pages.css">
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="page">
 
 <a class="skip" href="#contenu">Aller au contenu</a>
 
-<nav class="nav montre" aria-label="Navigation principale">
+<header class="nav montre" id="nav">
   <a class="nav-logo" href="../index.html" aria-label="Cobalt Création, accueil">
     <img src="../assets/img/logo-cobalt.png" alt="" width="653" height="337">
   </a>
-  <ul>
+  <nav aria-label="Navigation principale">
+    <ul class="nav-liens">
       <li><a href="../creation-d-objet-unique/index.html">Ateliers signatures</a></li>
       <li><a href="../ateliers-de-personnalisation/index.html">Animations retail</a></li>
       <li><a href="../coffrets-packaging/index.html">Coffrets</a></li>
       <li><a href="../design-graphique-design-papier/index.html">Studio graphique</a></li>
-      <li><a href="../contact-feedback/index.html">Contact</a></li>
-  </ul>
-</nav>
+    </ul>
+  </nav>
+  <a class="nav-cta aimant" href="../contact-feedback/index.html">Un projet</a>
+  <button class="nav-menu" type="button" aria-expanded="false" aria-controls="rideau-menu">
+    <span class="nav-menu-txt">Menu</span><span class="nav-menu-traits" aria-hidden="true"><i></i><i></i></span>
+  </button>
+</header>
 
-<main id="contenu" class="rubrique legal">
-  <header class="rubrique-tete">
+<div class="rideau-menu" id="rideau-menu" hidden>
+  <nav aria-label="Menu">
+    <ol>
+      <li><a href="../index.html"><span>01</span>Accueil</a></li>
+      <li><a href="../creation-d-objet-unique/index.html"><span>02</span>Ateliers signatures</a></li>
+      <li><a href="../ateliers-de-personnalisation/index.html"><span>03</span>Animations retail</a></li>
+      <li><a href="../coffrets-packaging/index.html"><span>04</span>Coffrets</a></li>
+      <li><a href="../design-graphique-design-papier/index.html"><span>05</span>Studio graphique</a></li>
+      <li><a href="../contact-feedback/index.html"><span>06</span>Contact</a></li>
+    </ol>
+  </nav>
+  <p class="rideau-menu-pied">35 boulevard Berthier, Paris 17<sup>e</sup><br>
+  <a href="tel:+33144098185">+33 1 44 09 81 85</a></p>
+</div>
+
+<main id="contenu">
+
+<section class="page-tete nuit">
+  <header class="sec-head">
+    <i class="sec-rule" aria-hidden="true"></i>
+    <p class="idx">Informations légales</p>
     <h1>Politique de confidentialité</h1>
   </header>
+</section>
 
+<div class="bascule" data-vers="craie" aria-hidden="true"></div>
+
+<section class="rubrique craie">
   <div class="texte-legal">
   <h2>Le but de cette politique de confidentialité</h2>
   <p>Le but de cette politique de confidentialité est d&#x27;informer les utilisateurs de notre site des données personnelles que nous recueillerons ainsi que les informations suivantes, le cas échéant :</p>
@@ -135,17 +165,30 @@
   <p>35, Boulevard Berthier - 75017 Paris / +33 (0) 1 44 09 81 85 / contact@cobaltcreation.com</p>
   <p>Horaires d&#x27;ouverture : 9h30 - 18h30</p>
   </div>
+  <a class="suite" href="../contact-feedback/index.html">
+    <span class="suite-oeil">Rubrique suivante</span>
+    <span class="suite-titre">Nous contacter</span>
+    <span class="suite-fleche" aria-hidden="true"></span>
+  </a>
+</section>
 
-  <p class="retour"><a href="../index.html">Retour à l’accueil</a></p>
 </main>
 
-<footer class="pied">
-  <img src="../assets/img/logo-cobalt.png" alt="Cobalt Création" width="653" height="337">
-  <p>Agence Cobalt Création, 35 boulevard Berthier, 75017 Paris</p>
-  <p class="pied-liens">
-    <a href="https://www.instagram.com/cobaltcreation/" rel="noopener">Instagram</a>
-    <a href="../politique-de-confidentialite/index.html">Politique de confidentialité</a>
-  </p>
+<footer class="pied nuit">
+  <p class="pied-mot">Cobalt Création</p>
+  <div class="pied-grille">
+    <p>Agence Cobalt Création<br>35 boulevard Berthier, 75017 Paris</p>
+    <p><a href="tel:+33144098185">+33 1 44 09 81 85</a><br><a href="mailto:contact@cobaltcreation.com">contact@cobaltcreation.com</a></p>
+    <p class="pied-liens">
+      <a href="https://www.instagram.com/cobaltcreation/" rel="noopener">Instagram</a>
+      <a href="../contact-feedback/index.html">L’équipe</a>
+      <a href="../politique-de-confidentialite/index.html">Confidentialité</a>
+    </p>
+    <a class="haut" href="#contenu">Haut de page</a>
+  </div>
 </footer>
+
+<script src="../assets/vendor/motion.js" defer></script>
+<script src="../assets/site.js" defer></script>
 </body>
 </html>

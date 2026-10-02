@@ -1,218 +1,140 @@
 /* =========================================================
    Cobalt Création — les pages de rubrique.
-   Même registre que l'accueil : craie, typographie modeste,
-   filets plutôt que cadres, beaucoup d'air.
+   Même registre que l'accueil : on entre par la nuit, une bascule,
+   puis la craie de l'atelier où les pièces sont posées.
    ========================================================= */
 
-body.page {
-  background: var(--craie-fond);
-  color: var(--encre);
-}
-/* Sur ces pages la barre est là d'emblée : il n'y a pas de film
-   à laisser passer avant. */
-body.page .nav { transform: none; }
+body.page { background: var(--encre-nuit); }
 
-.rubrique {
-  max-width: var(--mesure);
-  margin: 0 auto;
-  padding: calc(64px + clamp(3.5rem, 9vh, 6.5rem)) 6vw clamp(4rem, 9vh, 7rem);
+.page-tete {
+  padding-top: calc(var(--nav-h) + clamp(5rem, 15vh, 10rem)) !important;
+  padding-bottom: clamp(2.4rem, 7vh, 4.4rem) !important;
 }
-
-.rubrique-tete {
-  max-width: 46ch;
-  margin-bottom: clamp(3rem, 7vh, 5rem);
-}
-.rubrique-tete h1 {
-  margin: 0 0 1.4rem;
-  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
-  font-weight: 300;
-  line-height: 1.28;
-  letter-spacing: -0.005em;
-}
-.rubrique-tete p {
-  margin: 0;
-  font-size: clamp(0.98rem, 1.12vw, 1.1rem);
-  line-height: 1.68;
-  color: var(--encre-doux);
-}
+.page-tete .sec-head { margin-bottom: 0; }
+.page-tete h1 { max-width: 16ch; }
 .compte {
-  margin-top: 1.6rem !important;
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--filet);
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.7rem !important;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+  margin: clamp(2rem, 5vh, 3rem) 0 0;
+  font: 400 0.68rem/1 var(--sans); letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--or);
 }
+
+.rubrique { padding-top: clamp(2rem, 6vh, 4rem) !important; }
 
 /* ---------------------------------------------------------
    LES PIÈCES
-   Une grille de six colonnes : une pièce sur trois en prend
-   quatre, les autres deux. Le rythme évite la planche-contact.
+   Douze colonnes : la grande en prend huit, les autres quatre,
+   et le remplissage dense referme chaque rangée.
    --------------------------------------------------------- */
 .pieces {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: clamp(2rem, 3.4vw, 3.4rem) clamp(1.4rem, 2.4vw, 2.4rem);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: clamp(3rem, 7vh, 5.5rem) clamp(1.4rem, 2.6vw, 2.8rem);
 }
-.piece       { grid-column: span 2; margin: 0; }
-.piece-large { grid-column: span 4; }
+.piece { grid-column: span 4; margin: 0; }
+.piece-large { grid-column: span 8; }
 
-.piece img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  margin-bottom: 1.1rem;
-  background: rgba(2, 55, 79, 0.05);
+.piece-img {
+  overflow: hidden;
+  aspect-ratio: 8 / 11;
+  background: rgba(2, 55, 79, 0.06);
 }
-.piece-large img { aspect-ratio: 16 / 10; }
+.piece-large .piece-img { aspect-ratio: 16 / 11; }
+.piece-img img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+  transition: transform 1400ms var(--e-pose);
+}
+.piece:hover .piece-img img { transform: scale(1.045); }
 
-.piece figcaption h2 {
-  margin: 0 0 0.3rem;
-  font-size: clamp(1rem, 1.25vw, 1.16rem);
-  font-weight: 400;
-  line-height: 1.34;
-}
-.piece-piece {
-  margin: 0 0 0.5rem;
-  font-size: 0.94rem;
-  line-height: 1.5;
-  color: var(--encre-doux);
-}
+.piece figcaption { padding-top: 1.3rem; max-width: 52ch; }
 .piece-type {
   margin: 0 0 0.7rem;
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.64rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(2, 55, 79, 0.72);
-}
-.piece-desc {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.66;
+  font: 400 0.62rem/1.6 var(--sans); letter-spacing: 0.22em; text-transform: uppercase;
   color: var(--encre-doux);
-  max-width: 52ch;
 }
+.piece h2 { font: 300 clamp(1.5rem, 2.1vw, 2.1rem)/1.12 var(--serif); letter-spacing: -0.01em; }
+.piece-piece { margin: 0.35rem 0 0; font: 300 clamp(1.1rem, 1.3vw, 1.3rem)/1.4 var(--serif); color: var(--encre-doux); font-style: normal; }
+.piece-desc { margin-top: 0.9rem; }
+.piece-desc p { margin: 0 0 0.5rem; font: 300 1.16rem/1.55 var(--serif); color: var(--encre-doux); }
 
 /* ---------------------------------------------------------
-   CONTACT
+   LA RUBRIQUE SUIVANTE
+   On ne finit jamais une page sur une impasse.
    --------------------------------------------------------- */
-.contact-haut {
+.suite {
   display: grid;
-  grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: start;
-  padding-bottom: clamp(3rem, 7vh, 5rem);
-  border-bottom: 1px solid var(--filet);
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 0.8rem 2rem;
+  margin-top: clamp(5rem, 14vh, 10rem);
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--filet);
+  color: var(--encre); text-decoration: none;
 }
-/* L'accueil place ses blocs par zones nommées (`coord`, `form`).
-   Ici la grille est différente : sans cette remise à zéro, les deux
-   blocs retombent au même endroit et se superposent. */
-.contact-haut .coord,
-.contact-haut .form { grid-area: auto; align-self: start; }
+.suite-oeil { grid-column: 1 / -1; font: 400 0.66rem/1 var(--sans); letter-spacing: 0.3em; text-transform: uppercase; color: var(--encre-doux); }
+.suite-titre { font: 300 clamp(2.4rem, 6.4vw, 6.4rem)/1 var(--serif); letter-spacing: -0.02em; transition: transform 800ms var(--e-pose); }
+.suite-fleche { position: relative; width: clamp(3rem, 6vw, 6rem); height: 1px; margin-bottom: 1.4em; background: currentColor; transition: width 800ms var(--e-pose), background-color 400ms ease; }
+.suite-fleche::after {
+  content: ""; position: absolute; right: 0; top: -5px; width: 11px; height: 11px;
+  border-top: 1px solid currentColor; border-right: 1px solid currentColor; transform: rotate(45deg);
+}
+.suite:hover .suite-titre, .suite:focus-visible .suite-titre { transform: translateX(1.2rem); }
+.suite:hover .suite-fleche, .suite:focus-visible .suite-fleche { width: clamp(5rem, 10vw, 10rem); background: var(--or); color: var(--or); }
 
+/* ---------------------------------------------------------
+   LE CONTACT ET L'ÉQUIPE
+   --------------------------------------------------------- */
+.equipe-titre {
+  margin: clamp(5rem, 13vh, 9rem) 0 clamp(2rem, 5vh, 3rem);
+  padding-top: 1.6rem; border-top: 1px solid var(--filet);
+  font: 300 clamp(2.2rem, 4.4vw, 4.4rem)/1 var(--serif); letter-spacing: -0.016em;
+}
 .equipe {
-  margin-top: clamp(3rem, 7vh, 5rem);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: clamp(2rem, 3.4vw, 3.4rem);
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: clamp(2.4rem, 4vw, 4rem) clamp(1.6rem, 3vw, 3rem);
 }
 .pole-bloc h2 {
-  margin: 0 0 1.4rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid var(--filet);
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
+  margin: 0 0 1.4rem; padding-top: 1.1rem; border-top: 1px solid var(--filet);
+  font: 400 0.66rem/1 var(--sans); letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--encre-doux);
 }
-.gens { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.6rem; }
-.qui  { margin: 0; font-size: 1.04rem; line-height: 1.35; }
-.role { margin: 0.15rem 0 0.4rem; font-size: 0.88rem; line-height: 1.5; color: var(--encre-doux); }
-.joindre { margin: 0; font-size: 0.88rem; line-height: 1.6; }
+.gens { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.7rem; }
+.qui  { margin: 0; font: 400 1.32rem/1.25 var(--serif); }
+.role { margin: 0.25rem 0 0.5rem; font: 300 1.14rem/1.45 var(--serif); color: var(--encre-doux); }
+.joindre { margin: 0; font: 400 0.74rem/1.8 var(--sans); letter-spacing: 0.02em; }
 .joindre a {
-  color: var(--encre);
-  text-decoration: none;
-  border-bottom: 1px solid var(--filet);
-  word-break: break-word;
+  color: var(--encre); text-decoration: none; word-break: break-word;
+  background: linear-gradient(var(--or), var(--or)) left bottom / 0 1px no-repeat;
+  transition: background-size 600ms var(--e-pose);
 }
-.joindre a:hover, .joindre a:focus-visible { border-color: var(--encre); }
+.joindre a:hover, .joindre a:focus-visible { background-size: 100% 1px; }
 
 /* ---------------------------------------------------------
    LE TEXTE LÉGAL
-   Une seule colonne étroite : c'est fait pour être lu.
    --------------------------------------------------------- */
-.texte-legal { max-width: 68ch; }
-.texte-legal h2 {
-  margin: clamp(2.4rem, 5vh, 3.4rem) 0 0.9rem;
-  font-size: clamp(1.15rem, 1.5vw, 1.35rem);
-  font-weight: 400;
-  line-height: 1.34;
-}
-.texte-legal h3 {
-  margin: 2rem 0 0.7rem;
-  font-size: 1.02rem;
-  font-weight: 400;
-}
-.texte-legal p,
-.texte-legal li {
-  font-size: 0.98rem;
-  line-height: 1.72;
-  color: var(--encre-doux);
-}
+.texte-legal { max-width: 70ch; }
+.texte-legal h2 { margin: clamp(2.6rem, 6vh, 3.6rem) 0 1rem; font: 300 clamp(1.5rem, 2.2vw, 2rem)/1.2 var(--serif); }
+.texte-legal h2:first-child { margin-top: 0; }
+.texte-legal h3 { margin: 2rem 0 0.7rem; font: 400 1.2rem/1.3 var(--serif); }
+.texte-legal p, .texte-legal li { font: 300 1.2rem/1.65 var(--serif); color: var(--encre-doux); }
 .texte-legal p { margin: 0 0 1rem; }
 .texte-legal ul { margin: 0 0 1.4rem; padding-left: 1.2rem; }
 .texte-legal li { margin-bottom: 0.5rem; }
-
-/* ---------------------------------------------------------
-   RETOUR ET PIED
-   --------------------------------------------------------- */
-.retour {
-  margin: clamp(3.5rem, 8vh, 6rem) 0 0;
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--filet);
-}
-.retour a {
-  font-family: "Inter", system-ui, sans-serif;
-  font-size: 0.7rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: var(--encre);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(2, 55, 79, 0.42);
-  padding-bottom: 0.3rem;
-}
-.retour a:hover, .retour a:focus-visible { border-color: var(--encre); }
-
-.pied-liens {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  margin-top: 0.8rem !important;
-}
-.pied-liens a {
-  color: rgba(2, 55, 79, 0.72);
-  text-decoration: none;
-  border-bottom: 1px solid var(--filet);
-}
-.pied-liens a:hover, .pied-liens a:focus-visible { color: var(--encre); border-color: var(--encre); }
-
-.nav a[aria-current="page"] { color: var(--encre); border-bottom: 1px solid var(--or); padding-bottom: 3px; }
+.texte-legal li::marker { color: var(--or); }
+.texte-legal a { color: var(--encre); }
 
 /* ---------------------------------------------------------
    REPLI
    --------------------------------------------------------- */
-@media (max-width: 900px) {
-  .contact-haut { grid-template-columns: 1fr; }
+@media (max-width: 1000px) {
+  .piece, .piece-large { grid-column: span 6; }
+  .piece-large .piece-img { aspect-ratio: 8 / 11; }
 }
-@media (max-width: 760px) {
+@media (max-width: 640px) {
   .pieces { grid-template-columns: 1fr; }
   .piece, .piece-large { grid-column: 1 / -1; }
-  .piece-large img { aspect-ratio: 1 / 1; }
-  .rubrique { padding-left: 7vw; padding-right: 7vw; }
+  .piece-img, .piece-large .piece-img { aspect-ratio: 4 / 5; }
+  .suite { grid-template-columns: 1fr; }
+  .suite-fleche { margin-bottom: 0; }
 }
