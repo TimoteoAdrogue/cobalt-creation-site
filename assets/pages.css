@@ -132,6 +132,9 @@ body.page { background: var(--encre-nuit); }
   .piece-large .piece-img { aspect-ratio: 8 / 11; }
 }
 @media (max-width: 640px) {
+  /* au téléphone, rien sous 12 px pour ce qu'on doit lire et toucher */
+  .joindre { font-size: 0.86rem; line-height: 1.75; }
+  .pole-bloc h2, .suite-oeil, .compte { font-size: 0.76rem; }
   .pieces { grid-template-columns: 1fr; }
   .piece, .piece-large { grid-column: 1 / -1; }
   .piece-img, .piece-large .piece-img { aspect-ratio: 4 / 5; }

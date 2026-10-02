@@ -16,11 +16,13 @@
 <meta property="og:image" content="assets/img/hero-poster.jpg">
 
 <link rel="icon" href="assets/img/logo-cobalt.png" type="image/png">
+<link rel="preload" href="assets/img/hero-poster.webp" as="image" type="image/webp" media="(orientation: landscape)" fetchpriority="high">
+<link rel="preload" href="assets/img/hero-poster-phone.webp" as="image" type="image/webp" media="(orientation: portrait)" fetchpriority="high">
 <link rel="preload" href="assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/hero.css">
 <link rel="stylesheet" href="assets/site.css">
-<script>(function(d){var h=d.documentElement;h.classList.add('js');
-try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)h.classList.add('ouverture');}catch(e){}})(document);</script>
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body class="accueil">
 
@@ -31,7 +33,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
      site actuel, pour ne pas dérouter qui connaît déjà la maison. -->
 <header class="nav" id="nav">
   <a class="nav-logo" href="#hero" aria-label="Cobalt Création, retour en haut">
-    <img src="assets/img/logo-cobalt.png" alt="" width="653" height="337">
+    <img src="assets/img/logo-cobalt.png" alt="" width="653" height="337" loading="lazy">
   </a>
   <nav aria-label="Navigation principale">
     <ul class="nav-liens">
@@ -88,7 +90,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
       <div class="band" data-a="0.00" data-b="0.36">
         <p class="kicker">Atelier parisien depuis 2014</p>
         <h1 class="band-h">
-          <img src="assets/img/logo-cobalt-creme.png" alt="Cobalt Création" class="wordmark" width="653" height="337">
+          <img src="assets/img/logo-cobalt-creme.png" alt="Cobalt Création" class="wordmark" width="653" height="337" fetchpriority="high">
         </h1>
         <p class="lede">L’atelier de personnalisation<br>des maisons de luxe</p>
       </div>
@@ -183,7 +185,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Tracée à la pointe, d’une initiale à une illustration complète. Les gravures
           peuvent être colorées ou dorées à la feuille.</p>
           <p class="geste-mat">Verre · Céramique · Laque</p>
-          <img src="assets/img/work/la-gravure.jpg" alt="Prénom gravé à la main sur un flacon ambré" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/la-gravure.webp" srcset="assets/img/work/w480/la-gravure.webp 480w, assets/img/work/w800/la-gravure.webp 800w, assets/img/work/w1200/la-gravure.webp 1200w" sizes="92vw" alt="Prénom gravé à la main sur un flacon ambré" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="1">
@@ -192,7 +194,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Un motif reproduit à l’identique, ou posée plus librement pour un décor
           lumineux qui ne se répète pas. Or ou argent véritable.</p>
           <p class="geste-mat">Verre · Céramique · Papier · Marbre</p>
-          <img src="assets/img/work/la-feuille-l-or.jpg" alt="Feuille d'or appliquée au pinceau sur un flacon" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/la-feuille-l-or.webp" srcset="assets/img/work/w480/la-feuille-l-or.webp 480w, assets/img/work/w800/la-feuille-l-or.webp 800w, assets/img/work/w1200/la-feuille-l-or.webp 1200w" sizes="92vw" alt="Feuille d'or appliquée au pinceau sur un flacon" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="2">
@@ -201,7 +203,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>La technique la plus libre : la création d’une image, toute la palette,
           tous les styles.</p>
           <p class="geste-mat">Verre · Papier · Textile · Cuir · Bois</p>
-          <img src="assets/img/work/la-peinture.jpg" alt="Sac peint à la main sur un carton d'invitation" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/la-peinture.webp" srcset="assets/img/work/w480/la-peinture.webp 480w, assets/img/work/w800/la-peinture.webp 800w, assets/img/work/w1200/la-peinture.webp 1200w" sizes="92vw" alt="Sac peint à la main sur un carton d'invitation" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="3">
@@ -210,7 +212,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Un logo, un dessin vectoriel ou un texte repris fil à fil, ou un motif créé
           selon votre brief.</p>
           <p class="geste-mat">Textile</p>
-          <img src="assets/img/work/la-broderie.jpg" alt="Prénoms brodés sur des serviettes en lin" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/la-broderie.webp" srcset="assets/img/work/w480/la-broderie.webp 480w, assets/img/work/w800/la-broderie.webp 800w, assets/img/work/w1200/la-broderie.webp 1200w" sizes="92vw" alt="Prénoms brodés sur des serviettes en lin" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="4">
@@ -219,7 +221,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Un prénom, une dédicace, tracés à la plume devant l’invité. Nos artistes
           vous accompagnent du brief jusqu’à la production.</p>
           <p class="geste-mat">Pièces uniques · Cadeaux d’exception</p>
-          <img src="assets/img/work/la-calligraphie.jpg" alt="Calligraphie à la plume sur une carte" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/la-calligraphie.webp" srcset="assets/img/work/w480/la-calligraphie.webp 480w, assets/img/work/w800/la-calligraphie.webp 800w, assets/img/work/w1200/la-calligraphie.webp 1200w" sizes="92vw" alt="Calligraphie à la plume sur une carte" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="5">
@@ -228,7 +230,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Le marquage en creux, avec ou sans or, en caractères d’imprimerie de 0,5
           ou 1 cm, avec ou sans empattements.</p>
           <p class="geste-mat">Cuir · Papier · Bois</p>
-          <img src="assets/img/work/l-embossage-et-la-dorure-a-chaud.jpg" alt="Ceintures en cuir marquées d'initiales à la dorure à chaud" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/l-embossage-et-la-dorure-a-chaud.webp" srcset="assets/img/work/w480/l-embossage-et-la-dorure-a-chaud.webp 480w, assets/img/work/w800/l-embossage-et-la-dorure-a-chaud.webp 800w, assets/img/work/w1200/l-embossage-et-la-dorure-a-chaud.webp 1200w" sizes="92vw" alt="Ceintures en cuir marquées d'initiales à la dorure à chaud" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="6">
@@ -237,7 +239,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Un logo reproduit à l’identique, ou une illustration créée selon votre
           brief, avec une grande liberté graphique.</p>
           <p class="geste-mat">Textile · Cuir · Bois</p>
-          <img src="assets/img/work/l-aerographe.jpg" alt="Carnets en cuir décorés à l'aérographe" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/l-aerographe.webp" srcset="assets/img/work/w480/l-aerographe.webp 480w, assets/img/work/w800/l-aerographe.webp 800w, assets/img/work/w1200/l-aerographe.webp 1200w" sizes="92vw" alt="Carnets en cuir décorés à l'aérographe" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
       <li class="geste" data-i="7">
@@ -246,21 +248,21 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
           <p>Pour faire rêver vos invités : une couronne, un portrait, un jardin,
           dessinés pour chacun, jusqu’à la pièce unique.</p>
           <p class="geste-mat">Pièces uniques · Cadeaux d’exception</p>
-          <img src="assets/img/work/l-illustration.jpg" alt="Couronne florale illustrée à l'aquarelle autour d'initiales" loading="lazy" decoding="async" width="1400" height="1400">
+          <img src="assets/img/work/w800/l-illustration.webp" srcset="assets/img/work/w480/l-illustration.webp 480w, assets/img/work/w800/l-illustration.webp 800w, assets/img/work/w1200/l-illustration.webp 1200w" sizes="92vw" alt="Couronne florale illustrée à l'aquarelle autour d'initiales" loading="lazy" decoding="async" width="1400" height="1400">
         </div></div>
       </li>
     </ol>
 
     <div class="gestes-cadre" aria-hidden="true">
       <div class="gestes-fenetre">
-        <img src="assets/img/work/la-gravure.jpg" alt="" class="on" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/la-feuille-l-or.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/la-peinture.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/la-broderie.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/la-calligraphie.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/l-embossage-et-la-dorure-a-chaud.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/l-aerographe.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-        <img src="assets/img/work/l-illustration.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img loading="lazy" src="assets/img/work/w800/la-gravure.webp" srcset="assets/img/work/w480/la-gravure.webp 480w, assets/img/work/w800/la-gravure.webp 800w, assets/img/work/w1200/la-gravure.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" class="on" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/la-feuille-l-or.webp" srcset="assets/img/work/w480/la-feuille-l-or.webp 480w, assets/img/work/w800/la-feuille-l-or.webp 800w, assets/img/work/w1200/la-feuille-l-or.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/la-peinture.webp" srcset="assets/img/work/w480/la-peinture.webp 480w, assets/img/work/w800/la-peinture.webp 800w, assets/img/work/w1200/la-peinture.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/la-broderie.webp" srcset="assets/img/work/w480/la-broderie.webp 480w, assets/img/work/w800/la-broderie.webp 800w, assets/img/work/w1200/la-broderie.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/la-calligraphie.webp" srcset="assets/img/work/w480/la-calligraphie.webp 480w, assets/img/work/w800/la-calligraphie.webp 800w, assets/img/work/w1200/la-calligraphie.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/l-embossage-et-la-dorure-a-chaud.webp" srcset="assets/img/work/w480/l-embossage-et-la-dorure-a-chaud.webp 480w, assets/img/work/w800/l-embossage-et-la-dorure-a-chaud.webp 800w, assets/img/work/w1200/l-embossage-et-la-dorure-a-chaud.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/l-aerographe.webp" srcset="assets/img/work/w480/l-aerographe.webp 480w, assets/img/work/w800/l-aerographe.webp 800w, assets/img/work/w1200/l-aerographe.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+        <img src="assets/img/work/w800/l-illustration.webp" srcset="assets/img/work/w480/l-illustration.webp 480w, assets/img/work/w800/l-illustration.webp 800w, assets/img/work/w1200/l-illustration.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" loading="lazy" decoding="async" width="1400" height="1400">
       </div>
       <p class="gestes-compte"><span class="gestes-n">I</span> / VIII</p>
     </div>
@@ -288,7 +290,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
       <ol class="galerie-piste">
         <li class="carte carte-haute">
           <a href="ateliers-de-personnalisation/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/givenchy-la-collection-particuliere-atelier-retail-g.jpg" alt="Gravure sur verre d'un flacon Givenchy par une graveuse" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/givenchy-la-collection-particuliere-atelier-retail-g.webp" srcset="assets/img/work/w480/givenchy-la-collection-particuliere-atelier-retail-g.webp 480w, assets/img/work/w800/givenchy-la-collection-particuliere-atelier-retail-g.webp 800w, assets/img/work/w1200/givenchy-la-collection-particuliere-atelier-retail-g.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Gravure sur verre d'un flacon Givenchy par une graveuse" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Givenchy</p>
               <h3>La Collection Particulière</h3>
@@ -298,7 +300,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte">
           <a href="ateliers-de-personnalisation/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/yves-saint-laurent-beaute-libre-atelier-atelier-reta.jpg" alt="Feuille d'or appliquée sur un flacon Yves Saint Laurent Beauté Libre" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/yves-saint-laurent-beaute-libre-atelier-atelier-reta.webp" srcset="assets/img/work/w480/yves-saint-laurent-beaute-libre-atelier-atelier-reta.webp 480w, assets/img/work/w800/yves-saint-laurent-beaute-libre-atelier-atelier-reta.webp 800w, assets/img/work/w1200/yves-saint-laurent-beaute-libre-atelier-atelier-reta.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Feuille d'or appliquée sur un flacon Yves Saint Laurent Beauté Libre" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Yves Saint Laurent Beauté</p>
               <h3>Libre Atelier</h3>
@@ -308,7 +310,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte carte-large">
           <a href="ateliers-de-personnalisation/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/guerlain-xmas-2024-atelier-retail-international-stra.jpg" alt="Strass et calligraphie sur des ornements de Noël Guerlain" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/guerlain-xmas-2024-atelier-retail-international-stra.webp" srcset="assets/img/work/w480/guerlain-xmas-2024-atelier-retail-international-stra.webp 480w, assets/img/work/w800/guerlain-xmas-2024-atelier-retail-international-stra.webp 800w, assets/img/work/w1200/guerlain-xmas-2024-atelier-retail-international-stra.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Strass et calligraphie sur des ornements de Noël Guerlain" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Guerlain</p>
               <h3>Xmas 2024, avec l’artiste Shourouk</h3>
@@ -318,7 +320,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte carte-haute">
           <a href="ateliers-de-personnalisation/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/ruinart-carte-blanche-2023-atelier-evenementiel-doru.jpg" alt="Atelier de dorure à chaud Ruinart au Carreau du Temple" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/ruinart-carte-blanche-2023-atelier-evenementiel-doru.webp" srcset="assets/img/work/w480/ruinart-carte-blanche-2023-atelier-evenementiel-doru.webp 480w, assets/img/work/w800/ruinart-carte-blanche-2023-atelier-evenementiel-doru.webp 800w, assets/img/work/w1200/ruinart-carte-blanche-2023-atelier-evenementiel-doru.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Atelier de dorure à chaud Ruinart au Carreau du Temple" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Ruinart</p>
               <h3>Carte Blanche 2023</h3>
@@ -328,7 +330,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte">
           <a href="coffrets-packaging/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/maison-martell-piece-unique-gravure-mise-en-couleur-.jpg" alt="Flacon Martell gravé et mis en couleur or" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/maison-martell-piece-unique-gravure-mise-en-couleur-.webp" srcset="assets/img/work/w480/maison-martell-piece-unique-gravure-mise-en-couleur-.webp 480w, assets/img/work/w800/maison-martell-piece-unique-gravure-mise-en-couleur-.webp 800w, assets/img/work/w1200/maison-martell-piece-unique-gravure-mise-en-couleur-.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Flacon Martell gravé et mis en couleur or" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Maison Martell</p>
               <h3>Pièce unique</h3>
@@ -338,7 +340,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte carte-large">
           <a href="ateliers-de-personnalisation/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/christian-louboutin-paris-2024-atelier-retail-peintu.jpg" alt="Flacon Christian Louboutin peint à la main" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/christian-louboutin-paris-2024-atelier-retail-peintu.webp" srcset="assets/img/work/w480/christian-louboutin-paris-2024-atelier-retail-peintu.webp 480w, assets/img/work/w800/christian-louboutin-paris-2024-atelier-retail-peintu.webp 800w, assets/img/work/w1200/christian-louboutin-paris-2024-atelier-retail-peintu.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Flacon Christian Louboutin peint à la main" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Christian Louboutin</p>
               <h3>Paris 2024</h3>
@@ -348,7 +350,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte carte-haute">
           <a href="ateliers-de-personnalisation/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/dior-xmas-parties-2024-confection-de-couronnes-de-no.jpg" alt="Couronne de Noël en fleurs séchées, ruban Dior" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/dior-xmas-parties-2024-confection-de-couronnes-de-no.webp" srcset="assets/img/work/w480/dior-xmas-parties-2024-confection-de-couronnes-de-no.webp 480w, assets/img/work/w800/dior-xmas-parties-2024-confection-de-couronnes-de-no.webp 800w, assets/img/work/w1200/dior-xmas-parties-2024-confection-de-couronnes-de-no.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Couronne de Noël en fleurs séchées, ruban Dior" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Dior</p>
               <h3>Xmas Parties 2024</h3>
@@ -358,7 +360,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte">
           <a href="coffrets-packaging/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/chaumet-x-trudon-serie-de-bougies-pour-chinese-new-y.jpg" alt="Bougie Chaumet x Trudon décorée à la feuille d'or" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/chaumet-x-trudon-serie-de-bougies-pour-chinese-new-y.webp" srcset="assets/img/work/w480/chaumet-x-trudon-serie-de-bougies-pour-chinese-new-y.webp 480w, assets/img/work/w800/chaumet-x-trudon-serie-de-bougies-pour-chinese-new-y.webp 800w, assets/img/work/w1200/chaumet-x-trudon-serie-de-bougies-pour-chinese-new-y.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Bougie Chaumet x Trudon décorée à la feuille d'or" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Chaumet × Trudon</p>
               <h3>Chinese New Year 2024</h3>
@@ -368,7 +370,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte carte-large">
           <a href="design-graphique-design-papier/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/chanel-photophore.jpg" alt="Photophore Chanel illustré à l'or sur fond noir" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/chanel-photophore.webp" srcset="assets/img/work/w480/chanel-photophore.webp 480w, assets/img/work/w800/chanel-photophore.webp 800w, assets/img/work/w1200/chanel-photophore.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Photophore Chanel illustré à l'or sur fond noir" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Chanel</p>
               <h3>Photophore</h3>
@@ -378,7 +380,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         </li>
         <li class="carte carte-haute">
           <a href="design-graphique-design-papier/index.html" data-curseur="Voir">
-            <div class="carte-img"><img src="assets/img/work/lalique-soleil-vibrant.jpg" alt="Flacon Lalique Soleil Vibrant dans la lumière" loading="lazy" decoding="async" width="1400" height="1400"></div>
+            <div class="carte-img"><img src="assets/img/work/w800/lalique-soleil-vibrant.webp" srcset="assets/img/work/w480/lalique-soleil-vibrant.webp 480w, assets/img/work/w800/lalique-soleil-vibrant.webp 800w, assets/img/work/w1200/lalique-soleil-vibrant.webp 1200w" sizes="(min-width: 1001px) 36vw, 80vw" alt="Flacon Lalique Soleil Vibrant dans la lumière" loading="lazy" decoding="async" width="1400" height="1400"></div>
             <div class="carte-txt">
               <p class="carte-maison">Lalique</p>
               <h3>Soleil Vibrant</h3>
@@ -420,8 +422,8 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
   <div class="methode-corps">
     <figure class="lampe" id="lampe">
       <div class="lampe-plaque">
-        <img class="lampe-base" src="assets/img/work/guerlain-piece-unique-gravure-et-mise-en-couleur-or.jpg" alt="Le Flacon aux abeilles de Guerlain, gravé à la main et mis en couleur or" loading="lazy" decoding="async" width="1400" height="1400">
-        <img class="lampe-lumiere" src="assets/img/work/guerlain-piece-unique-gravure-et-mise-en-couleur-or.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="1400" height="1400">
+        <img class="lampe-base" src="assets/img/work/w800/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp" srcset="assets/img/work/w480/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp 480w, assets/img/work/w800/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp 800w, assets/img/work/w1200/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="Le Flacon aux abeilles de Guerlain, gravé à la main et mis en couleur or" loading="lazy" decoding="async" width="1400" height="1400">
+        <img class="lampe-lumiere" src="assets/img/work/w800/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp" srcset="assets/img/work/w480/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp 480w, assets/img/work/w800/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp 800w, assets/img/work/w1200/guerlain-piece-unique-gravure-et-mise-en-couleur-or.webp 1200w" sizes="(min-width: 1001px) 40vw, 92vw" alt="" aria-hidden="true" loading="lazy" decoding="async" width="1400" height="1400">
       </div>
       <figcaption>
         <span>Guerlain, pièce unique. Gravure à la main et mise en couleur or.</span>
@@ -476,7 +478,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         <span class="metier-txt">L’atelier s’installe dans votre point de vente ou votre événement.
         Nos artistes personnalisent devant le client, du corner d’une journée au déploiement international.</span>
         <span class="metier-fleche" aria-hidden="true"></span>
-        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/guerlain-xmas-2022-atelier-retail-france-gravure.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
+        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/w800/guerlain-xmas-2022-atelier-retail-france-gravure.webp" srcset="assets/img/work/w480/guerlain-xmas-2022-atelier-retail-france-gravure.webp 480w, assets/img/work/w800/guerlain-xmas-2022-atelier-retail-france-gravure.webp 800w, assets/img/work/w1200/guerlain-xmas-2022-atelier-retail-france-gravure.webp 1200w" sizes="30vw" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
       </a>
     </li>
     <li>
@@ -486,7 +488,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         <span class="metier-txt">Des dispositifs déjà éprouvés, immédiatement disponibles, que nous
         adaptons à votre direction artistique sans repartir d’une page blanche.</span>
         <span class="metier-fleche" aria-hidden="true"></span>
-        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/glenmorangie-piece-unique-gravure-et-feuille-d-or.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
+        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/w800/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp" srcset="assets/img/work/w480/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp 480w, assets/img/work/w800/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp 800w, assets/img/work/w1200/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp 1200w" sizes="30vw" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
       </a>
     </li>
     <li>
@@ -496,7 +498,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         <span class="metier-txt">De la pièce unique à la série de quelques centaines, personnalisées
         à la main dans notre atelier parisien.</span>
         <span class="metier-fleche" aria-hidden="true"></span>
-        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/guerlain-personnalisation-d-une-serie-de-25-coffrets.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
+        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/w800/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp" srcset="assets/img/work/w480/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp 480w, assets/img/work/w800/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp 800w, assets/img/work/w1200/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp 1200w" sizes="30vw" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
       </a>
     </li>
     <li>
@@ -506,16 +508,16 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
         <span class="metier-txt">Il imagine les ateliers avant qu’ils existent, et dessine ce qui les
         accompagne : print, packaging, design produit, illustration.</span>
         <span class="metier-fleche" aria-hidden="true"></span>
-        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/evidens-de-beaute-chinese-new-year-2025.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
+        <span class="metier-img" aria-hidden="true"><img src="assets/img/work/w800/evidens-de-beaute-chinese-new-year-2025.webp" srcset="assets/img/work/w480/evidens-de-beaute-chinese-new-year-2025.webp 480w, assets/img/work/w800/evidens-de-beaute-chinese-new-year-2025.webp 800w, assets/img/work/w1200/evidens-de-beaute-chinese-new-year-2025.webp 1200w" sizes="30vw" alt="" loading="lazy" decoding="async" width="1400" height="1400"></span>
       </a>
     </li>
   </ul>
 
   <div class="apercu" aria-hidden="true">
-    <img src="assets/img/work/guerlain-xmas-2022-atelier-retail-france-gravure.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-    <img src="assets/img/work/glenmorangie-piece-unique-gravure-et-feuille-d-or.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-    <img src="assets/img/work/guerlain-personnalisation-d-une-serie-de-25-coffrets.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
-    <img src="assets/img/work/evidens-de-beaute-chinese-new-year-2025.jpg" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+    <img data-src="assets/img/work/w800/guerlain-xmas-2022-atelier-retail-france-gravure.webp" data-srcset="assets/img/work/w480/guerlain-xmas-2022-atelier-retail-france-gravure.webp 480w, assets/img/work/w800/guerlain-xmas-2022-atelier-retail-france-gravure.webp 800w, assets/img/work/w1200/guerlain-xmas-2022-atelier-retail-france-gravure.webp 1200w" sizes="340px" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+    <img data-src="assets/img/work/w800/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp" data-srcset="assets/img/work/w480/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp 480w, assets/img/work/w800/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp 800w, assets/img/work/w1200/glenmorangie-piece-unique-gravure-et-feuille-d-or.webp 1200w" sizes="340px" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+    <img data-src="assets/img/work/w800/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp" data-srcset="assets/img/work/w480/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp 480w, assets/img/work/w800/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp 800w, assets/img/work/w1200/guerlain-personnalisation-d-une-serie-de-25-coffrets.webp 1200w" sizes="340px" alt="" loading="lazy" decoding="async" width="1400" height="1400">
+    <img data-src="assets/img/work/w800/evidens-de-beaute-chinese-new-year-2025.webp" data-srcset="assets/img/work/w480/evidens-de-beaute-chinese-new-year-2025.webp 480w, assets/img/work/w800/evidens-de-beaute-chinese-new-year-2025.webp 800w, assets/img/work/w1200/evidens-de-beaute-chinese-new-year-2025.webp 1200w" sizes="340px" alt="" loading="lazy" decoding="async" width="1400" height="1400">
   </div>
 </section>
 
@@ -535,7 +537,7 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
 
   <div class="atelier-corps">
     <figure class="atelier-img devoile">
-      <img src="assets/img/work/guerlain-xmas-2024-atelier-retail-international-cour.jpg" alt="Une artiste de Cobalt Création personnalise des ornements de Noël au comptoir Guerlain" loading="lazy" decoding="async" width="1400" height="1400">
+      <img src="assets/img/work/w800/guerlain-xmas-2024-atelier-retail-international-cour.webp" srcset="assets/img/work/w480/guerlain-xmas-2024-atelier-retail-international-cour.webp 480w, assets/img/work/w800/guerlain-xmas-2024-atelier-retail-international-cour.webp 800w, assets/img/work/w1200/guerlain-xmas-2024-atelier-retail-international-cour.webp 1200w" sizes="(min-width: 1001px) 42vw, 92vw" alt="Une artiste de Cobalt Création personnalise des ornements de Noël au comptoir Guerlain" loading="lazy" decoding="async" width="1400" height="1400">
     </figure>
 
     <div class="poles">
@@ -630,8 +632,20 @@ try{if(!sessionStorage.getItem('cc-ouverture')&&!matchMedia('(prefers-reduced-mo
   </div>
 </footer>
 
-<script src="assets/hero-scrub.js"></script>
-<script src="assets/vendor/motion.js" defer></script>
-<script src="assets/site.js" defer></script>
+<script src="assets/hero-scrub.js" defer></script>
+<!-- Le mouvement ne sert qu'une fois le film passé : il se charge après la
+     page, pour que rien ne dispute la bande passante au premier écran. -->
+<script>
+addEventListener('load', function () {
+  var m = document.createElement('script');
+  m.src = 'assets/vendor/motion.js';
+  m.onload = m.onerror = function () {
+    var s = document.createElement('script');
+    s.src = 'assets/site.js';
+    document.body.appendChild(s);
+  };
+  document.body.appendChild(m);
+}, { once: true });
+</script>
 </body>
 </html>

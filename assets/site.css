@@ -13,7 +13,7 @@
 @font-face {
   font-family: "Cormorant Garamond";
   src: url("fonts/cormorant-garamond-latin-italic.woff2") format("woff2");
-  font-weight: 300 500;
+  font-weight: 300 400;
   font-style: italic;
   font-display: swap;
 }
@@ -62,33 +62,6 @@ img { max-width: 100%; }
 }
 
 :focus-visible { outline: 2px solid var(--or); outline-offset: 4px; }
-
-/* ---------------------------------------------------------
-   L'OUVERTURE
-   Le premier passage de la séance seulement. Le voile est posé
-   par le CSS avant tout rendu, pour qu'aucune image ne fuie, et
-   s'efface tout seul si le script n'arrive jamais.
-   --------------------------------------------------------- */
-html.ouverture::after {
-  content: "";
-  position: fixed; inset: 0; z-index: 90;
-  background: var(--encre-nuit);
-  animation: secours 0.01s linear 2.6s forwards;
-}
-@keyframes secours { to { visibility: hidden; } }
-
-.rideau {
-  position: fixed; inset: 0; z-index: 91;
-  display: grid; place-items: center; align-content: center; gap: 1.6rem;
-  background: var(--encre-nuit);
-  pointer-events: none;
-}
-.rideau img { width: min(260px, 52vw); height: auto; opacity: 0; }
-.rideau i {
-  display: block; width: min(260px, 52vw); height: 1px;
-  background: linear-gradient(to right, transparent, var(--or), transparent);
-  transform: scaleX(0);
-}
 
 /* ---------------------------------------------------------
    LA BARRE
@@ -303,7 +276,11 @@ sup { font-size: 0.62em; line-height: 0; }
 }
 .nuit .lede { color: var(--craie-doux); }
 
-h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
+/* L'italique ne se dessine qu'une fois la page chargée (site.js pose
+   .italiques) : sa fonte ne dispute pas la bande passante au premier écran,
+   et les seuls mots en italique sont bien plus bas. */
+em { font-style: normal; }
+.italiques h1 em, .italiques h2 em, .italiques .manifeste em { font-style: italic; font-weight: 300; }
 
 /* le masque d'un mot qui monte de sa propre ligne */
 .wm { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.1em; margin-bottom: -0.1em; }
@@ -409,7 +386,6 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
   border-top: 1px solid var(--filet);
   position: relative;
   cursor: default;
-  transition: opacity 600ms var(--e-pose);
 }
 .geste:last-child { border-bottom: 1px solid var(--filet); }
 .geste::before {
@@ -460,8 +436,10 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
 .gestes-n { display: inline-block; min-width: 2.6em; color: var(--encre); }
 
 /* avec le script, seul le geste qui passe au milieu se lit plein */
-.js .gestes.vivant .geste { opacity: 0.3; }
-.js .gestes.vivant .geste.actif { opacity: 1; }
+/* le titre s'éteint par la couleur et non par l'opacité, que l'entrée
+   anime déjà ; 58 % d'encre tient encore 3:1 en grand corps */
+.js .gestes.vivant .geste h3 { color: rgba(2, 55, 79, 0.58); transition: color 600ms var(--e-pose), transform 700ms var(--e-pose); }
+.js .gestes.vivant .geste.actif h3 { color: var(--encre); }
 .js .gestes.vivant .geste.actif::before { transform: scaleX(1); }
 .js .gestes.vivant .geste.actif h3 { transform: translateX(0.9rem); }
 
@@ -590,12 +568,16 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
 .etapes li:first-child .etape-n { top: 0; }
 .etapes h3 { font: 300 clamp(2rem, 3.4vw, 3.2rem)/1.05 var(--serif); letter-spacing: -0.01em; }
 .etapes p { max-width: 40ch; margin: 0.9rem 0 0; font: 300 clamp(1.18rem, 1.36vw, 1.38rem)/1.55 var(--serif); color: var(--craie-doux); }
-.etapes-ligne {
-  position: absolute; left: calc(clamp(3.6rem, 6vw, 5.6rem) * -1 + 0.38rem); top: 2.2rem; bottom: 0; width: 1px;
+.etapes.vivant::before,
+.etapes.vivant::after {
+  content: ""; position: absolute; top: 2.2rem; bottom: 0; width: 1px;
+  left: 2.3rem;
   background: var(--filet-nuit);
 }
-.etapes-ligne i { position: absolute; inset: 0; background: linear-gradient(to bottom, var(--or), rgba(208,171,126,0.5)); transform: scaleY(0); transform-origin: top; }
-.etapes.vivant .etapes-ligne { left: calc(clamp(3.6rem, 6vw, 5.6rem) * -1 + 0.38rem); }
+.etapes.vivant::after {
+  background: linear-gradient(to bottom, var(--or), rgba(208, 171, 126, 0.5));
+  transform: scaleY(var(--fil, 0)); transform-origin: top;
+}
 .etapes.vivant .etape-n { color: rgba(244, 241, 236, 0.3); }
 .etapes.vivant li.passe .etape-n { color: var(--or); }
 
@@ -854,8 +836,8 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
   .metier-fleche { grid-area: fleche; justify-self: start; width: 2.2rem; margin-top: 0.4rem; }
   .metier-img { display: block; grid-area: img; overflow: hidden; aspect-ratio: 4 / 5; background: rgba(244, 241, 236, 0.06); }
   .metier-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .metiers.vivant .metier { opacity: 0.36; transition: opacity 600ms ease; }
-  .metiers.vivant .metier.actif { opacity: 1; }
+  .metiers.vivant .metier-titre { color: rgba(244, 241, 236, 0.5); transition: color 600ms ease; }
+  .metiers.vivant .metier.actif .metier-titre { color: var(--craie); }
   .metiers.vivant .metier.actif .metier-fleche { width: 3.4rem; background: var(--or); }
   .metiers.vivant .metier.actif .metier-fleche::after { color: var(--or); }
   .metiers.vivant .metier-img { clip-path: inset(100% 0% 0% 0%); }
@@ -880,7 +862,7 @@ h1 em, h2 em, .manifeste em { font-style: italic; font-weight: 300; }
   .pied-grille { grid-template-columns: 1fr; }
   .etapes { padding-left: 3rem; }
   .etape-n { left: -3rem; }
-  .etapes .etapes-ligne, .etapes.vivant .etapes-ligne { left: calc(-3rem + 0.36rem); }
+  .etapes.vivant::before, .etapes.vivant::after { left: 1.9rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -35,6 +35,7 @@ const IN = { amount: 0.1, margin: '0px 0px -16% 0px' };
 const cascade = n => Math.max(0.045, Math.min(0.11, 0.6 / n));
 
 const accueil = document.body.classList.contains('accueil');
+doc.classList.add('italiques');
 let rail = null;
 const racine = accueil ? '' : '../';
 
@@ -156,7 +157,30 @@ if (btnMenu && menu) {
 /* =========================================================
    À PARTIR D'ICI, LE MOUVEMENT
    ========================================================= */
-if (!M) { doc.classList.remove('ouverture'); return; }
+/* ---- Les images arrivent avant le regard --------------------------------
+   Le chargement paresseux du navigateur attend qu'une image soit presque à
+   l'écran : on la voyait se dessiner. Ici, chaque bloc commande ses images
+   quand il est encore à un écran et demi, y compris celles que la galerie
+   tient hors champ à droite et les vignettes fixes des métiers. Rien n'est
+   demandé tant que le visiteur regarde le film : le poster passe d'abord. */
+const charger = img => {
+  if (img.dataset.srcset) { img.srcset = img.dataset.srcset; delete img.dataset.srcset; }
+  if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+  if (img.loading === 'lazy') img.loading = 'eager';
+};
+(() => {
+  const blocs = $$('main > section:not(.rubrique), .rubrique .piece, .pied');
+  // seulement ce qui s'affiche à cette taille d'écran : les images réservées à
+  // l'autre format restent paresseuses et ne coûtent rien
+  const toutes = b => $$('img[loading="lazy"], img[data-src]', b).filter(i => i.getClientRects().length);
+  if (!('IntersectionObserver' in window)) { blocs.forEach(b => toutes(b).forEach(charger)); return; }
+  const io = new IntersectionObserver(es => {
+    for (const e of es) if (e.isIntersecting) { io.unobserve(e.target); toutes(e.target).forEach(charger); }
+  }, { rootMargin: '150% 0px 150% 0px' });
+  blocs.forEach(b => io.observe(b));
+})();
+
+if (!M) return;
 
 /* Tout ce qu'on cache pour le faire revenir est inscrit ici. Si un
    observateur ne se déclenche jamais, le filet le rend quand même :
@@ -181,27 +205,6 @@ const armer = () => {
     }
   }, 500);
 };
-
-/* ---- 0. L'ouverture ----------------------------------------------------
-   Une fois par séance : le logotype, la goutte d'or étirée en filet,
-   puis le rideau se lève sur le film. Deux secondes, pas une de plus. */
-(() => {
-  if (!doc.classList.contains('ouverture')) return;
-  try { sessionStorage.setItem('cc-ouverture', '1'); } catch (e) { /* navigation privée */ }
-  const r = document.createElement('div');
-  r.className = 'rideau';
-  r.setAttribute('aria-hidden', 'true');
-  r.innerHTML = '<img src="' + racine + 'assets/img/logo-cobalt-creme.png" alt="" width="653" height="337"><i></i>';
-  document.body.append(r);
-  doc.classList.remove('ouverture');
-  const img = $('img', r), filet = $('i', r);
-  M.animate(img, { opacity: [0, 1], y: [16, 0] }, { duration: 0.9, delay: 0.1, ease: [0.22, 0.61, 0.24, 1] });
-  M.animate(filet, { scaleX: [0, 1] }, { duration: 1.1, delay: 0.35, ease: TRACE });
-  M.animate([img, filet], { opacity: 0, y: -30 }, { duration: 0.55, delay: 1.45, ease: RIDEAU });
-  M.animate(r, { clipPath: ['inset(0% 0% 0% 0%)', 'inset(0% 0% 100% 0%)'] },
-    { duration: 1.0, delay: 1.55, ease: RIDEAU })
-    .finished.then(() => r.remove()).catch(() => r.remove());
-})();
 
 /* ---- 1. Le mot qui monte de sa ligne -----------------------------------
    Chaque mot est enveloppé au moment voulu ; le balisage servi reste
@@ -320,9 +323,16 @@ const lever = (mots, delai = 0) => {
     // on observe le parent : un élément entièrement rogné ne compte, pour
     // l'observateur, comme visible nulle part, et son entrée ne viendrait jamais
     M.inView(c.parentElement, () => {
-      montre(c);
-      M.animate(c, { clipPath: ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'] }, { duration: 1.2, ease: RIDEAU });
-      if (img && !c.classList.contains('gestes-fenetre')) M.animate(img, { scale: [1.22, 1] }, { duration: 1.8, ease: [0.22, 0.61, 0.24, 1] });
+      const jouer = () => {
+        montre(c);
+        M.animate(c, { clipPath: ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'] }, { duration: 1.2, ease: RIDEAU });
+        if (img && !c.classList.contains('gestes-fenetre')) M.animate(img, { scale: [1.22, 1] }, { duration: 1.8, ease: [0.22, 0.61, 0.24, 1] });
+      };
+      // le rideau ne se lève que sur une image prête : jamais sur une image
+      // qui se dessine encore ligne à ligne
+      if (!img) return void jouer();
+      charger(img);
+      Promise.race([img.decode ? img.decode().catch(() => {}) : null, new Promise(r => setTimeout(r, 1200))]).then(jouer);
       return false;
     }, { amount: 0.15 });
   }
@@ -364,16 +374,16 @@ const lever = (mots, delai = 0) => {
       if (!part) continue;
       if (!part.trim()) { frag.append(part); continue; }
       const s = document.createElement('span'); s.className = 'lu'; s.textContent = part;
-      s.style.opacity = '0.14';
+      s.style.opacity = '0.58';
       frag.append(s); mots.push(s);
     }
     t.replaceWith(frag);
   }
-  const vus = new Float32Array(mots.length).fill(0.14);
+  const vus = new Float32Array(mots.length).fill(0.58);
   M.scroll(v => {
     const k = v * (mots.length + 2);
     for (let i = 0; i < mots.length; i++) {
-      const o = 0.14 + 0.86 * lisse(clamp(k - i, 0, 1));
+      const o = 0.58 + 0.42 * lisse(clamp(k - i, 0, 1));
       if (Math.abs(o - vus[i]) > 0.01) { vus[i] = o; mots[i].style.opacity = o.toFixed(3); }
     }
   }, { target: p, offset: ['start 82%', 'end 42%'] });
@@ -608,12 +618,10 @@ const lever = (mots, delai = 0) => {
    quand le fil l'a atteint. Sans ce fichier, tous sont allumés. */
 (() => {
   const ol = $('.etapes'); if (!ol || reduce || !M.scroll) return;
-  const ligne = document.createElement('span'); ligne.className = 'etapes-ligne';
-  const fil = document.createElement('i'); ligne.append(fil); ol.append(ligne);
   ol.classList.add('vivant');
   const lis = $$(':scope > li', ol);
   M.scroll(p => {
-    fil.style.transform = `scaleY(${p.toFixed(4)})`;
+    ol.style.setProperty('--fil', p.toFixed(4));
     const h = ol.clientHeight;
     for (const li of lis) li.classList.toggle('passe', li.offsetTop + 30 <= p * h + 40);
   }, { target: ol, offset: ['start 70%', 'end 55%'] });
@@ -879,8 +887,9 @@ const lever = (mots, delai = 0) => {
 (() => {
   const mot = $('.pied-mot'); if (!mot || reduce) return;
   const texte = mot.textContent.trim();
-  mot.setAttribute('aria-label', texte);
   mot.textContent = '';
+  const lu = document.createElement('span'); lu.className = 'sr-only'; lu.textContent = texte;
+  mot.append(lu);
   const lettres = [];
   for (const [k, m] of texte.split(' ').entries()) {
     if (k) mot.append(' ');
