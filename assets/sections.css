@@ -1,0 +1,519 @@
+/* =========================================================
+   Cobalt Création — tout ce qui vient après le film.
+
+   BASCULE DE THÈME, UNE SEULE FOIS DANS LA PAGE :
+   le héro est nocturne, le corps est en craie. C'est délibéré,
+   et ça tient au sujet — leurs pièces sont photographiées sur
+   du marbre et du papier blanc, pas dans le noir. Le film
+   s'arrête, le jour se lève sur l'atelier. Aucune autre
+   inversion ensuite : le pied de page reste en craie.
+   ========================================================= */
+
+/* --- ce que le corps ajoute aux jetons du héro --- */
+:root {
+  --craie-fond: #F4F1EC;
+  --encre-doux: rgba(2, 55, 79, 0.72);   /* AA sur la craie : le seuil est à 0,675 */
+  --filet:      rgba(2, 55, 79, 0.16);
+  --mesure:     1380px;
+}
+
+.skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 20;
+  background: var(--encre);
+  color: var(--craie);
+  padding: 0.9rem 1.4rem;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.8rem;
+}
+.skip:focus { left: 0; }
+
+/* ---------------------------------------------------------
+   LA BARRE
+   Une seule ligne, 64 px, en craie sur craie. Elle glisse
+   depuis le haut quand le film a rendu la main.
+   --------------------------------------------------------- */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 15;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0 6vw;
+  background: rgba(244, 241, 236, 0.94);
+  border-bottom: 1px solid var(--filet);
+  transform: translate3d(0, -100%, 0);
+  transition: transform 680ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+@supports (backdrop-filter: blur(8px)) {
+  .nav { background: rgba(244, 241, 236, 0.82); backdrop-filter: blur(10px); }
+}
+.nav.montre { transform: none; }
+
+.nav-logo img { display: block; width: 84px; height: auto; }
+
+.nav ul {
+  display: flex;
+  gap: clamp(1rem, 2.4vw, 2.4rem);
+  margin: 0; padding: 0;
+  list-style: none;
+}
+.nav a {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: rgba(2, 55, 79, 0.74);
+  transition: color 260ms ease;
+}
+.nav a:hover, .nav a:focus-visible { color: var(--encre); }
+
+@media (prefers-reduced-motion: reduce) { .nav { transition: none; } }
+
+/* Sous 700 px la liste seule tient la barre : le logotype
+   sortirait la navigation sur deux lignes. */
+@media (max-width: 700px) {
+  .nav { justify-content: center; padding: 0 4vw; }
+  .nav-logo { display: none; }
+  .nav ul { gap: 1.05rem; }
+  .nav a { font-size: 0.62rem; letter-spacing: 0.12em; }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+main {
+  background: var(--craie-fond);
+  color: var(--encre);
+}
+
+/* Les ancres doivent s'arrêter sous la barre, pas dessous. */
+main > section[id] { scroll-margin-top: 64px; }
+
+main h2 {
+  margin: 0;
+  font-size: clamp(1.45rem, 2.3vw, 2.05rem);
+  font-weight: 300;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+}
+main h3 {
+  margin: 0;
+  font-size: clamp(1rem, 1.25vw, 1.16rem);
+  font-weight: 400;
+  line-height: 1.38;
+}
+main p {
+  font-size: clamp(0.98rem, 1.12vw, 1.1rem);
+  line-height: 1.68;
+  color: var(--encre-doux);
+}
+
+/* L'œil : le petit label en capitales. Trois dans toute la page,
+   pas un de plus, sinon chaque section se met à sonner pareil. */
+.oeil {
+  margin: 0 0 1.1rem;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(2, 55, 79, 0.72);
+}
+
+/* Les entrées au défilement. Discrètes : le contenu monte de
+   quelques pixels, il n'arrive pas en fanfare. */
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition: opacity 1200ms cubic-bezier(0.22, 0.61, 0.36, 1),
+              transform 1200ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.reveal.vu { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------------------------------------------------------
+   1. MANIFESTE
+   Pleine largeur, une seule phrase qui porte la page.
+   --------------------------------------------------------- */
+.manifeste {
+  max-width: var(--mesure);
+  margin: 0 auto;
+  padding: clamp(8rem, 18vh, 14rem) 6vw clamp(5rem, 10vh, 7.5rem);
+}
+.manifeste-p {
+  margin: 0;
+  max-width: 26ch;
+  font-size: clamp(1.7rem, 2.9vw, 2.6rem) !important;
+  font-weight: 300;
+  line-height: 1.28 !important;
+  letter-spacing: -0.012em;
+  color: var(--encre) !important;
+}
+.manifeste-p span {
+  display: block;
+  margin-top: 1.6rem;
+  max-width: 42ch;
+  font-size: clamp(1.02rem, 1.35vw, 1.25rem);
+  line-height: 1.66;
+  letter-spacing: 0;
+  color: var(--encre-doux);
+}
+.manifeste-note {
+  margin: clamp(3rem, 7vh, 5rem) 0 0;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--filet);
+  max-width: 44ch;
+}
+
+/* ---------------------------------------------------------
+   2. LES MAISONS
+   Un seul ruban dans toute la page. Les noms sont cités en
+   typographie : les logotypes appartiennent aux maisons.
+   --------------------------------------------------------- */
+.maisons {
+  padding: clamp(2rem, 5vh, 3.5rem) 0 clamp(5rem, 11vh, 8rem);
+  border-bottom: 1px solid var(--filet);
+}
+.ruban {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+}
+.ruban-piste {
+  display: flex;
+  width: max-content;
+  animation: glisse 88s linear infinite;
+}
+.ruban-piste span {
+  padding: 0 2.6vw;
+  font-size: clamp(1rem, 1.4vw, 1.35rem);
+  font-weight: 300;
+  white-space: nowrap;
+  color: rgba(2, 55, 79, 0.68);
+}
+@keyframes glisse {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+.maisons:hover .ruban-piste { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) {
+  .ruban { -webkit-mask-image: none; mask-image: none; overflow-x: auto; }
+  .ruban-piste { animation: none; }
+}
+
+/* ---------------------------------------------------------
+   3. SAVOIR-FAIRE
+   Grille asymétrique : deux cellules larges, deux moyennes,
+   deux sans image pour laisser respirer.
+   --------------------------------------------------------- */
+.savoir {
+  max-width: var(--mesure);
+  margin: 0 auto;
+  padding: clamp(6.5rem, 14vh, 10.5rem) 6vw;
+}
+.savoir-tete { max-width: 40ch; margin-bottom: clamp(2.6rem, 6vh, 4rem); }
+
+.grille {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(1.4rem, 2.4vw, 2.4rem);
+}
+.geste       { grid-column: span 2; }
+.geste-large { grid-column: span 4; }
+.geste-nu    { grid-column: span 2; }
+/* La dernière cellule prend toute la largeur : sans elle, la
+   troisième rangée resterait ouverte sur deux colonnes vides.
+   Somme des portées : 4+2 / 2+2+2 / 6, soit trois rangées pleines. */
+.geste-pleine { grid-column: 1 / -1; }
+.geste-pleine img { aspect-ratio: 21 / 9; }
+.geste-pleine .geste-txt p { max-width: 56ch; }
+
+.geste img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  margin-bottom: 1.2rem;
+}
+.geste-large img { aspect-ratio: 16 / 9; }
+
+.geste-txt h3 { margin-bottom: 0.5rem; }
+.geste-txt p  { margin: 0; max-width: 42ch; }
+
+/* Les deux cellules sans image portent un aplat d'encre :
+   sans elles, la grille serait six blocs de craie identiques. */
+.geste-nu {
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(1.6rem, 2.6vw, 2.4rem);
+  background: var(--encre);
+  color: var(--craie);
+}
+.geste-nu h3 { color: var(--craie); }
+.geste-nu p  { color: rgba(244, 241, 236, 0.72); }
+
+/* ---------------------------------------------------------
+   4. RÉALISATIONS
+   Pleine page. La légende se tient sous l'image, jamais
+   posée dessus.
+   --------------------------------------------------------- */
+.cas {
+  max-width: var(--mesure);
+  margin: 0 auto;
+  padding: clamp(4rem, 9vh, 7rem) 6vw clamp(5rem, 11vh, 8rem);
+}
+.cas-titre { max-width: 32ch; margin-bottom: clamp(2.6rem, 6vh, 4rem); }
+
+.cas-item { margin: 0 0 clamp(3rem, 7vh, 5rem); }
+.cas-item img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  margin-bottom: 1.1rem;
+}
+.cas-haut  img { aspect-ratio: 3 / 2;  }
+.cas-large img { aspect-ratio: 21 / 9; }
+.cas-paire .cas-item img { aspect-ratio: 4 / 5; }
+
+.cas-item figcaption h3 { margin-bottom: 0.4rem; }
+.cas-item figcaption p  { margin: 0; max-width: 46ch; }
+
+.cas-paire {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.4rem, 2.4vw, 2.6rem);
+}
+/* La seconde pièce descend un peu : la paire ne doit pas
+   se lire comme deux cases d'un tableau. */
+.cas-paire .cas-item:last-child { margin-top: clamp(2rem, 6vw, 5rem); }
+
+/* ---------------------------------------------------------
+   5. LES MÉTIERS
+   Des lignes, pas des cartes. Un filet au-dessus de chacune.
+   --------------------------------------------------------- */
+.metiers {
+  max-width: var(--mesure);
+  margin: 0 auto;
+  padding: clamp(6.5rem, 14vh, 10.5rem) 6vw;
+  border-top: 1px solid var(--filet);
+}
+.metiers-titre { max-width: 30ch; margin-bottom: clamp(2.6rem, 6vh, 4rem); }
+
+.metier {
+  display: grid;
+  grid-template-columns: minmax(0, 22ch) minmax(0, 1fr);
+  gap: clamp(1rem, 4vw, 4rem);
+  padding: clamp(1.6rem, 3.4vh, 2.6rem) 0;
+  border-top: 1px solid var(--filet);
+}
+.metier:last-child { border-bottom: 1px solid var(--filet); }
+.metier p { margin: 0; max-width: 58ch; }
+
+/* ---------------------------------------------------------
+   6. L'ATELIER
+   Deux colonnes, l'image plus haute que le texte.
+   --------------------------------------------------------- */
+.atelier {
+  max-width: var(--mesure);
+  margin: 0 auto;
+  padding: clamp(6.5rem, 14vh, 10.5rem) 6vw;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+.atelier-img img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.atelier-txt > p { max-width: 46ch; margin: 1.4rem 0 0; }
+
+.poles {
+  margin-top: clamp(2.4rem, 5vh, 3.4rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.4rem, 2.6vw, 2.4rem);
+}
+.pole { padding-top: 1.1rem; border-top: 1px solid var(--filet); }
+.pole h3 {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.pole p { margin: 0; font-size: 0.96rem; }
+
+/* ---------------------------------------------------------
+   7. CONTACT
+   --------------------------------------------------------- */
+.contact {
+  max-width: var(--mesure);
+  margin: 0 auto;
+  padding: clamp(5rem, 11vh, 8rem) 6vw clamp(4rem, 8vh, 6rem);
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+  grid-template-areas: "mot form" "coord form";
+  gap: clamp(2rem, 5vw, 5rem) clamp(2rem, 6vw, 6rem);
+  align-items: start;
+  border-top: 1px solid var(--filet);
+}
+.contact-mot { grid-area: mot; }
+.contact-mot h2 { max-width: 24ch; }
+.form  { grid-area: form; }
+.coord { grid-area: coord; align-self: end; font-style: normal; }
+.coord p { margin: 0 0 1.1rem; }
+.coord a { color: var(--encre); text-decoration: none; border-bottom: 1px solid var(--filet); }
+.coord a:hover, .coord a:focus-visible { border-color: var(--encre); }
+
+.champ { display: grid; gap: 0.5rem; margin-bottom: 1.3rem; }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+
+.form label {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(2, 55, 79, 0.72);
+}
+.form input,
+.form textarea {
+  width: 100%;
+  padding: 0.85rem 0;
+  font-family: inherit;
+  font-size: 1.02rem;
+  color: var(--encre);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgba(2, 55, 79, 0.32);
+  border-radius: 0;
+  transition: border-color 300ms ease;
+}
+.form textarea { resize: vertical; line-height: 1.6; }
+.form input:focus,
+.form textarea:focus {
+  outline: none;
+  border-bottom-color: var(--encre);
+}
+.form input:focus-visible,
+.form textarea:focus-visible { outline: 2px solid var(--encre); outline-offset: 4px; }
+
+/* Le gris de l'aide reste au-dessus du seuil AA sur la craie. */
+.aide { margin: 0; font-size: 0.84rem; color: rgba(2, 55, 79, 0.74); }
+.err  { margin: 0; font-size: 0.84rem; color: #8C2F1E; }
+.champ.invalide input { border-bottom-color: #8C2F1E; }
+
+.envoi {
+  margin-top: 1.4rem;
+  padding: 1rem 2.6rem;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--encre);
+  background: transparent;
+  border: 1px solid rgba(2, 55, 79, 0.42);
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 420ms ease, color 420ms ease, border-color 420ms ease;
+}
+.envoi:hover, .envoi:focus-visible {
+  background: var(--encre); color: var(--craie); border-color: var(--encre);
+}
+.envoi:active { transform: translateY(1px); }
+.envoi[disabled] { opacity: 0.55; cursor: default; }
+
+.etat { margin: 1rem 0 0; font-size: 0.9rem; color: var(--encre); }
+
+/* ---------------------------------------------------------
+   8. PIED
+   --------------------------------------------------------- */
+.pied {
+  background: var(--craie-fond);
+  color: var(--encre);
+  border-top: 1px solid var(--filet);
+  padding: clamp(3rem, 7vh, 5rem) 6vw;
+  text-align: center;
+}
+.pied img { width: 120px; height: auto; opacity: 0.8; }
+.pied p {
+  margin: 1.2rem 0 0;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(2, 55, 79, 0.5);
+}
+
+/* ---------------------------------------------------------
+   REPLI MOBILE
+   Chaque grille retombe en une colonne, explicitement.
+   --------------------------------------------------------- */
+@media (max-width: 900px) {
+  .atelier,
+  .contact {
+    grid-template-columns: 1fr;
+    grid-template-areas: "mot" "form" "coord";
+  }
+  .cas-paire { grid-template-columns: 1fr; }
+  .cas-paire .cas-item:last-child { margin-top: 0; }
+  .metier { grid-template-columns: 1fr; gap: 0.6rem; }
+}
+
+@media (max-width: 760px) {
+  .grille { grid-template-columns: 1fr; }
+  .geste, .geste-large, .geste-nu { grid-column: 1 / -1; }
+  .geste-large img, .geste img { aspect-ratio: 4 / 3; }
+  .cas-haut img, .cas-large img, .cas-paire .cas-item img { aspect-ratio: 4 / 3; }
+  .poles { grid-template-columns: 1fr; }
+  .duo { grid-template-columns: 1fr; }
+  .manifeste, .savoir, .cas, .metiers, .atelier, .contact { padding-left: 7vw; padding-right: 7vw; }
+}
+
+/* Le lien vers l'ensemble du portfolio, au milieu des réalisations. */
+.vers-tout {
+  margin: 0 0 clamp(3rem, 7vh, 5rem);
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--filet);
+}
+.vers-tout a {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--encre);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(2, 55, 79, 0.42);
+  padding-bottom: 0.3rem;
+}
+.vers-tout a:hover, .vers-tout a:focus-visible { border-color: var(--encre); }
+
+/* Les intitulés de métier deviennent des liens vers leur rubrique. */
+.metier h3 a {
+  color: var(--encre);
+  text-decoration: none;
+  border-bottom: 1px solid var(--filet);
+  padding-bottom: 2px;
+  transition: border-color 300ms ease;
+}
+.metier h3 a:hover, .metier h3 a:focus-visible { border-color: var(--or); }
