@@ -281,11 +281,20 @@ var GATES = [
 ];
 var MQLS = GATES.map(function (q) { return matchMedia(q); });
 
+/* Le film ne descend qu'une fois la page chargée : lancé plus tôt,
+   il disputait la bande passante au poster, et le poster est ce que
+   le visiteur voit en premier. Le défilement est déjà branché ; il
+   rattrape le film dès que celui-ci est là. */
+function quandPageChargee(fn) {
+  if (document.readyState === 'complete') fn();
+  else window.addEventListener('load', fn, { once: true });
+}
+
 function enableScrub() {
   if (scrubOn) return;
   scrubOn = true;
   hero.setAttribute('data-mode', 'scrub');
-  initHeroOnce();
+  quandPageChargee(initHeroOnce);
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
   bands.forEach(function (b) { b.op = -1; b.k = -1; });
