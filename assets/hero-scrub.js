@@ -179,6 +179,7 @@ function onScroll() {
    pas deux fois.
    --------------------------------------------------------- */
 var heroLance = false;
+var blobEnAttente = null;
 
 /* Une bascule de src laisse un seek orphelin : son 'seeked'
    n'arrivera jamais et la file resterait bloquée. */
@@ -246,8 +247,11 @@ function initHeroOnce() {
       });
     })().then(function () {
       clearTimeout(watchdog);
-      attachSource(URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' })),
-                   video.currentTime);
+      /* Basculer sur le blob recharge le film : jamais pendant que le
+         visiteur est plus bas, où ce rechargement coûtait une image. */
+      var blob = URL.createObjectURL(new Blob(chunks, { type: 'video/mp4' }));
+      var basculer = function () { attachSource(blob, video.currentTime); };
+      if (heroVisible) basculer(); else blobEnAttente = basculer;
     });
   }).catch(function () {
     /* Le direct joue déjà : le blob n'est qu'un confort, son échec
@@ -261,6 +265,7 @@ function initHeroOnce() {
    --------------------------------------------------------- */
 var io = new IntersectionObserver(function (es) {
   heroVisible = es[0].isIntersecting;
+  if (heroVisible && blobEnAttente) { var f = blobEnAttente; blobEnAttente = null; f(); }
   if (heroVisible && scrubOn) onScroll();
   else if (!heroVisible && rafId !== null) {
     cancelAnimationFrame(rafId); rafId = null;

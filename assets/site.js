@@ -32,7 +32,7 @@ const TRACE  = [0.35, 0, 0.15, 1];
 /* L'observation remonte du bas de l'écran : la révélation se joue là
    où l'œil se trouve, pas un écran plus bas où personne ne regarde. */
 const IN = { amount: 0.1, margin: '0px 0px -16% 0px' };
-const cascade = n => Math.max(0.045, Math.min(0.11, 0.6 / n));
+const cascade = n => Math.min(0.11, 0.6 / n);   // un groupe se résout en 0,6 s, quel que soit son nombre
 
 const accueil = document.body.classList.contains('accueil');
 doc.classList.add('italiques');
@@ -190,21 +190,33 @@ if (!M) return;
 const secours = new Map();
 const vuDepuis = new WeakMap();
 const surveiller = (el, remettre) => { secours.set(el, remettre); armer(); };
-const cacher = el => { el.style.opacity = '0'; surveiller(el, () => { el.style.opacity = ''; }); };
-const montre = els => { for (const el of [].concat(els)) secours.delete(el); };
+const caches = new Set();   // tout ce qui a été caché un jour, quel que soit son sort
+const cacher = el => { el.style.opacity = '0'; caches.add(el); surveiller(el, () => { el.style.opacity = ''; }); };
+// l'entrée tient elle-même sa première image : la valeur en ligne n'a plus à rester à 0
+const montre = els => { for (const el of [].concat(els)) { secours.delete(el); if (caches.delete(el) && el.style.opacity === '0') el.style.opacity = ''; } };
 let ronde = 0;
-const armer = () => {
-  if (ronde) return;
-  ronde = setInterval(() => {
+const balayer = () => {
+    // règle de fond : rien de caché ne reste au-dessus de l'écran, même si
+    // son animation a été lancée puis n'a jamais tourné
+    for (const el of caches) {
+      if (el.style.opacity !== '0') { if (!secours.has(el)) caches.delete(el); continue; }
+      if (el.getBoundingClientRect().bottom <= 0) { el.style.opacity = ''; caches.delete(el); secours.delete(el); }
+    }
     if (!secours.size) { clearInterval(ronde); ronde = 0; return; }
     const t = performance.now();
     for (const [el, remettre] of secours) {
-      if (el.getBoundingClientRect().top >= innerHeight) continue;
+      const r = el.getBoundingClientRect();
+      // déjà passé au-dessus : rendu tout de suite, sans entrée
+      if (r.bottom <= 0) { remettre(); secours.delete(el); continue; }
+      if (r.top >= innerHeight) continue;
       if (!vuDepuis.has(el)) { vuDepuis.set(el, t); continue; }
-      if (t - vuDepuis.get(el) > 1400) { remettre(); secours.delete(el); }
+      if (t - vuDepuis.get(el) > 300) { remettre(); secours.delete(el); }
     }
-  }, 500);
 };
+const armer = () => { if (!ronde) ronde = setInterval(balayer, 500); };
+// un saut (ancre, barre de défilement) se rattrape à l'arrêt, sans attendre la ronde
+let finQ = 0;
+addEventListener('scroll', () => { clearTimeout(finQ); finQ = setTimeout(balayer, 180); }, { passive: true });
 
 /* ---- 1. Le mot qui monte de sa ligne -----------------------------------
    Chaque mot est enveloppé au moment voulu ; le balisage servi reste
@@ -288,7 +300,8 @@ const lever = (mots, delai = 0) => {
     }
     for (const [p, lot] of parents) {
       lot.forEach(cacher);
-      M.inView(p, () => { montre(lot); venir(lot, { ...POSE, delay: M.stagger(cascade(lot.length)) }); return false; }, IN);
+      // un parent plus haut que dix écrans ne montre jamais 10 % de lui-même : le groupe part au premier pixel
+      M.inView(p, () => { montre(lot); venir(lot, { ...POSE, delay: M.stagger(cascade(lot.length)) }); return false; }, { ...IN, amount: 0 });
     }
   }
   for (const sel of seuls) for (const el of $$(sel)) {

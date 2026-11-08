@@ -159,7 +159,7 @@ body {
   letter-spacing: 0.42em;
   text-transform: uppercase;
   color: var(--or);
-  opacity: calc(0.35 + var(--k) * 0.65);
+  opacity: calc(0.78 + var(--k) * 0.22);
 }
 
 .wordmark {
@@ -172,8 +172,9 @@ body {
   opacity: 0.96;
 }
 
-.lede {
+.band-lede {
   margin: 2rem 0 0;
+  color: rgba(244, 241, 236, 0.86);
   font-size: clamp(1rem, 1.5vw, 1.28rem);
   font-weight: 300;
   line-height: 1.55;
@@ -284,7 +285,7 @@ body {
     opacity: calc(0.7 + var(--k) * 0.3);
   }
   .wordmark { max-width: min(250px, 64vw); }
-  .lede { margin-top: 1.3rem; font-size: 1.12rem; }
+  .band-lede { margin-top: 1.3rem; font-size: 1.12rem; }
   .band-h { font-size: clamp(1.55rem, 6.6vw, 2.3rem); line-height: 1.28; }
   /* La dernière phrase est trop longue pour sa coupure d'ordinateur :
      on la laisse couler. */
