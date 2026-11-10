@@ -34,8 +34,8 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+/* Pas de « scroll-behavior: smooth » ici : il ralentirait aussi les défilements
+   commandés par script. Les ancres glissent par site.js. */
 
 body {
   margin: 0;
@@ -128,8 +128,8 @@ body {
   z-index: 4;
   display: grid;
   align-items: center;
-  justify-items: end;
-  padding: 0 6vw 0 40vw;
+  justify-items: start;
+  padding: 0 6vw 0 61vw;
   pointer-events: none;
 }
 
@@ -138,8 +138,8 @@ body {
   /* La colonne doit rester plus large que le logotype, sinon
      celui-ci déborde et se fait rogner par le bord. */
   width: 100%;
-  max-width: min(38ch, 34vw);
-  text-align: right;
+  max-width: 33vw;
+  text-align: left;
   opacity: 0;
   /* --k : 0 à l'entrée de la bande, 1 une fois installée. */
   --k: 0;
@@ -183,11 +183,56 @@ body {
 
 .band-h {
   margin: 0;
-  font-size: clamp(1.35rem, 2.7vw, 2.45rem);
+  font-size: clamp(1.8rem, 3.1vw, 3.2rem);
   font-weight: 300;
-  line-height: 1.35;
-  letter-spacing: 0.01em;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
+.band-h em { font-style: italic; color: var(--or); }
+
+/* les techniques du client, une à une, au rythme du geste */
+.techniques { list-style: none; margin: 0; padding: 0; }
+.techniques li {
+  font-size: clamp(1.8rem, 3.1vw, 3.2rem); font-weight: 300; line-height: 1.12; letter-spacing: -0.01em;
+  transition: opacity 420ms ease, color 420ms ease;
+}
+.techniques li.lu { color: var(--or); font-style: italic; }
+.band-tech .kicker { margin-bottom: 1.4rem; }
+
+/* ---------------------------------------------------------
+   LA LUMIÈRE QUI REND LA MAIN
+   Le halo d'or attrape la feuille, puis le jour monte de la pointe du
+   pinceau. Sans script ou en mouvement réduit, le bas de l'image se
+   fond dans la craie : la même idée, immobile.
+   --------------------------------------------------------- */
+.aube { position: absolute; inset: 0; z-index: 6; pointer-events: none; overflow: hidden; }
+.aube i {
+  position: absolute; left: var(--ax, 53%); top: var(--ay, 47%);
+  width: 100vmax; height: 100vmax; margin: -50vmax 0 0 -50vmax;
+  border-radius: 50%; transform: scale(0); opacity: 0; will-change: transform, opacity;
+}
+.aube-lave { position: absolute; inset: 0; background: #F3ECE1; opacity: 0; will-change: opacity; }   /* simple fondu : pas de mélange sur la vidéo qui joue */
+.aube-jour {
+  background: radial-gradient(closest-side, #F4F1EC 0, #F4F1EC 36%, rgba(244,241,236,.93) 46%, rgba(242,236,226,.74) 58%,
+    rgba(238,226,206,.44) 70%, rgba(222,200,166,.18) 82%, rgba(208,171,126,.05) 92%, rgba(208,171,126,0));
+}
+.stage::after {
+  content: ""; position: absolute; inset: auto 0 0; height: 48%; z-index: 5; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(244,241,236,0) 0%, rgba(244,241,236,.06) 16%, rgba(244,241,236,.2) 32%,
+    rgba(244,241,236,.42) 48%, rgba(244,241,236,.66) 64%, rgba(244,241,236,.86) 80%, rgba(244,241,236,.97) 92%, #F4F1EC 100%);
+}
+.hero[data-mode="scrub"] .stage::after { display: none; }
+/* la page monte dans la lumière pendant que la scène tient encore */
+.hero[data-mode="scrub"] ~ main > .maison:first-child {
+  position: relative; z-index: 2;
+  /* le premier écran de la section est une bordure transparente : la scène
+     éclairée se voit à travers, la craie de la section commence dessous */
+  margin-top: -100vh; border-top: 100vh solid transparent; padding-top: 0;
+  background-clip: padding-box;
+}
+.hero[data-mode="scrub"] ~ main > .maison:first-child > :first-child { margin-top: -74vh; }
+.hero[data-mode="scrub"] ~ main > .maison:first-child > * { opacity: var(--jour, 1); }
 
 .cta {
   display: inline-block;
@@ -264,7 +309,7 @@ body {
   .bands {
     align-items: end;
     justify-items: start;
-    padding: 0 8vw 10vh 11vw;
+    padding: 0 8vw 10vh 8vw;
   }
   /* Le bas de la scène passe sous la barre du navigateur quand
      elle est dépliée : on remonte le texte d'autant. */
@@ -272,6 +317,7 @@ body {
 
   .band {
     max-width: 34rem;
+    width: 100%;
     text-align: left;
     transform: translate3d(0, calc((1 - var(--k)) * 14px), 0);
   }
@@ -286,10 +332,7 @@ body {
   }
   .wordmark { max-width: min(250px, 64vw); }
   .band-lede { margin-top: 1.3rem; font-size: 1.12rem; }
-  .band-h { font-size: clamp(1.55rem, 6.6vw, 2.3rem); line-height: 1.28; }
-  /* La dernière phrase est trop longue pour sa coupure d'ordinateur :
-     on la laisse couler. */
-  .band:last-child .band-h br { display: none; }
+  .band-h, .techniques li { font-size: clamp(1.9rem, 8.2vw, 2.6rem); line-height: 1.12; }
   .cta { margin-top: 1.8rem; }
 
   .fil { left: 5vw; }
@@ -307,6 +350,7 @@ body {
 .hero[data-mode="still"] .band { opacity: 0; }
 .hero[data-mode="still"] .band:first-child { opacity: 1; --k: 1; }
 .hero[data-mode="still"] .band:not(:first-child) { visibility: hidden; }
+.hero[data-mode="still"] .aube { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .band, .film, .fil, .cta { transition: none !important; }

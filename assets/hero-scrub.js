@@ -43,6 +43,29 @@ var stage  = document.querySelector('.stage');
 var video  = document.getElementById('hero-video');
 var fil    = document.querySelector('.fil');
 var bandEls = [].slice.call(document.querySelectorAll('.band'));
+/* La lumière de l'atelier : elle s'ouvre à la pointe du pinceau, sur la
+   feuille d'or, et devient la craie de la page. Un seul calque, mis à
+   l'échelle : aucun masque animé, aucun repeint du dégradé. */
+var aube = document.querySelector('.aube');
+var lave = aube && aube.querySelector('.aube-lave');
+var jour = aube && aube.querySelector('.aube-jour');
+var techs = [].slice.call(document.querySelectorAll('.techniques li'));
+var racine = document.documentElement;
+/* La pointe du pinceau sur la dernière image du film (image 575),
+   relevée dans chaque coupe, en fraction de l'image. */
+var POINTE_LARGE = [0.53, 0.47], POINTE_PHONE = [0.59, 0.47];
+var A_LARGE = 1600 / 900, A_PHONE = 506 / 900;
+function placerAube() {
+  if (!aube) return;
+  var w = stage.clientWidth, h = stage.clientHeight;
+  var vert = mqVertical.matches, a = vert ? A_PHONE : A_LARGE, pt = vert ? POINTE_PHONE : POINTE_LARGE;
+  var vw = h * a, vh = h;                         /* object-fit: cover */
+  if (w / h > a) { vw = w; vh = w / a; }
+  aube.style.setProperty('--ax', ((w - vw) / 2 + pt[0] * vw).toFixed(1) + 'px');
+  aube.style.setProperty('--ay', ((h - vh) / 2 + pt[1] * vh).toFixed(1) + 'px');
+}
+window.addEventListener('resize', placerAube, { passive: true });
+placerAube();
 
 if (!hero || !stage || !video) return;
 
@@ -112,7 +135,8 @@ function majBandes(p) {
     var op;
 
     if (i === 0)                    op = 1 - smoothstep(p, b.b - f, b.b);
-    else if (i === bands.length - 1) op = smoothstep(p, b.a, b.a + f);
+    /* la dernière phrase s'efface avant que la lumière ne l'atteigne */
+    else if (i === bands.length - 1) op = smoothstep(p, b.a, b.a + f) * (1 - smoothstep(p, 0.75, 0.81));
     else op = smoothstep(p, b.a, b.a + f) * (1 - smoothstep(p, b.b - f, b.b));
 
     var k = clamp((p - b.a) / Math.max(0.001, (b.b - b.a) * 0.4), 0, 1);
@@ -125,6 +149,31 @@ function majBandes(p) {
       b.el.style.visibility = op > 0.01 ? '' : 'hidden';
     }
     if (Math.abs(k - b.k) > 0.008)  { b.k = k;  b.el.style.setProperty('--k', k.toFixed(3)); }
+  }
+
+  /* Les cinq techniques, une à une, au rythme du geste */
+  if (techs.length) {
+    var t = clamp((p - 0.30) / (0.57 - 0.30), 0, 0.9999) * techs.length;
+    for (var j = 0; j < techs.length; j++) {
+      var on = j === Math.floor(t) ? 1 : (j < t ? 0.42 : 0.2);
+      if (techs[j]._o !== on) { techs[j]._o = on; techs[j].classList.toggle('lu', on === 1); techs[j].style.opacity = on; }
+    }
+  }
+
+  /* La lumière : un halo d'or attrape la feuille, puis le jour monte
+     de la pointe et couvre la scène. L'opacité suit l'échelle, pour que
+     la lumière ne soit jamais une boule blanche. */
+  if (aube) {
+    /* toute l'image se lève vers la craie (la lampe qu'on monte), pendant
+       que le jour s'ouvre depuis la feuille : jamais de bord net, jamais de boule */
+    var w = smoothstep(p, 0.76, 0.95), d = smoothstep(p, 0.79, 1);
+    lave.style.opacity = (0.7 * w).toFixed(3);
+    jour.style.transform = 'scale(' + (0.35 + 3.6 * d).toFixed(4) + ')';
+    jour.style.opacity = smoothstep(p, 0.79, 0.9).toFixed(3);
+    racine.style.setProperty('--jour', smoothstep(p, 0.86, 0.97).toFixed(3));
+    /* pour la barre : une fois la lumière venue, le sol du héro est la craie */
+    var sol = p > 0.93 ? 'craie' : 'photo';
+    if (hero.dataset.sol !== sol) hero.dataset.sol = sol;
   }
 
   /* Une amorce d'or reste visible à l'arrêt : sans elle, rien
@@ -299,6 +348,8 @@ function enableScrub() {
   if (scrubOn) return;
   scrubOn = true;
   hero.setAttribute('data-mode', 'scrub');
+  racine.classList.add('scrub');
+  placerAube();
   quandPageChargee(initHeroOnce);
   window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll, { passive: true });
@@ -311,6 +362,9 @@ function disableScrub() {
   if (!scrubOn && hero.getAttribute('data-mode')) return;
   scrubOn = false;
   hero.setAttribute('data-mode', 'still');   /* l'image fixe, rien d'autre */
+  racine.classList.remove('scrub');
+  racine.style.removeProperty('--jour');
+  techs.forEach(function (li) { li.style.removeProperty('opacity'); li._o = null; });
   window.removeEventListener('scroll', onScroll);
   window.removeEventListener('resize', onScroll);
   if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
