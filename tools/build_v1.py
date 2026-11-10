@@ -558,10 +558,10 @@ def build_contact():
       {lecture(q[0] + "? " + q[1] + "?", cls="titre", base="0.28")}
       <p class="texte">{esc(q[2])}</p>
       {coordonnees(b)}
+      {form()}
     </div>
     <div class="contact-photo">{pic(n, b, "moitie", eager=True, pos="50% 40%")}</div>
   </div>
-  <div class="contact-corps contact-corps-seul">{form()}</div>
 </section>
 <section class="equipe craie" id="equipe" data-sol="craie">
   <h2 class="label">L’équipe</h2>

@@ -98,6 +98,8 @@ em { font-style: normal; }
 
 main { display: block; }
 main > section, .scene { padding: clamp(6rem, 15vh, 11rem) var(--gout); }
+/* une marge d'enfant ne traverse jamais une section : sinon la nuit du fond passe entre deux sols */
+main > section, main > .plein, .pied { display: flow-root; }
 main > section, .plein { scroll-margin-top: 0; }
 
 /* ---------------------------------------------------------
@@ -113,15 +115,20 @@ main > section, .plein { scroll-margin-top: 0; }
   transform: translate3d(0, -101%, 0);
   transition: transform 700ms var(--e-pose), color 450ms ease;
 }
-.nav::before {   /* l'ombre portée ne paraît que sur une photographie */
-  content: ""; position: absolute; inset: 0 0 -60px; z-index: -1; pointer-events: none;
-  background: linear-gradient(to bottom, rgba(1,30,44,.5), rgba(1,30,44,.3) 35%, rgba(1,30,44,.1) 70%, rgba(1,30,44,0));
+/* Pas de barre : derrière les liens, le sol lui-même se fond vers le bas,
+   craie sur la craie, nuit sur la nuit, une ombre sur les photographies. */
+.nav::before, .nav::after {
+  content: ""; position: absolute; inset: 0 0 -56px; z-index: -1; pointer-events: none;
   opacity: 0; transition: opacity 450ms ease;
 }
+.nav::before { background: linear-gradient(to bottom, rgba(244,241,236,.96), rgba(244,241,236,.86) 40%, rgba(244,241,236,.42) 72%, rgba(244,241,236,.1) 90%, rgba(244,241,236,0)); }
+.nav::after  { background: linear-gradient(to bottom, rgba(1,30,44,.92), rgba(1,30,44,.78) 40%, rgba(1,30,44,.36) 72%, rgba(1,30,44,.08) 90%, rgba(1,30,44,0)); }
 .nav.montre { transform: none; }
 .nav.montre.range { transform: translate3d(0, -101%, 0); }
 .nav.sur-nuit { color: var(--craie); }
-.nav.montre:not(.range).sur-photo::before { opacity: 1; }
+.nav.montre:not(.range):not(.sur-nuit)::before { opacity: 1; }
+.nav.montre:not(.range).sur-nuit::after { opacity: 1; }
+.nav.montre:not(.range).sur-photo::after { opacity: 0.6; }
 
 .nav-logo { position: relative; display: block; line-height: 0; width: 96px; }
 .nav-logo img { width: 96px; height: auto; transition: opacity 450ms ease; }
@@ -149,7 +156,7 @@ main > section, .plein { scroll-margin-top: 0; }
 .nav-menu[aria-expanded="true"] .nav-menu-traits i:first-child { transform: translateY(3px) rotate(45deg); }
 .nav-menu[aria-expanded="true"] .nav-menu-traits i:last-child  { transform: translateY(-3px) rotate(-45deg); }
 .nav.menu-ouvert { color: var(--craie); transform: none; }
-.nav.menu-ouvert::before { opacity: 0; }
+.nav.menu-ouvert::before, .nav.menu-ouvert::after { opacity: 0 !important; }
 
 .nav-section {
   display: none; grid-column: 2; justify-self: center; height: 1.2em; overflow: hidden;
@@ -210,19 +217,20 @@ main > section, .plein { scroll-margin-top: 0; }
 .piece-plein, .ouverture-photo, .lampe-plaque { background: var(--encre-nuit); }
 .plein .piece-plein, .plein .ouvrir { height: 100vh; height: 100svh; }
 .plein .legende {
-  position: absolute; left: var(--gout); bottom: clamp(2.2rem, 7vh, 4.4rem); z-index: 2;
+  position: absolute; left: var(--gout); bottom: calc(21% + 1.2rem); z-index: 2;   /* au-dessus du bord fondu, sur l'ombre de l'image */
   color: var(--craie); padding: 0; pointer-events: none;
 }
 .plein .legende .leg-maison { color: var(--or); }
 .plein .legende .leg-ligne + .leg-ligne { color: var(--craie-texte); }
 .plein .ouvrir::after {   /* l'assise de la légende */
-  content: ""; position: absolute; inset: auto 0 0; height: 46%; pointer-events: none;
-  background: linear-gradient(to top, rgba(1,30,44,.62), rgba(1,30,44,.34) 40%, rgba(1,30,44,.1) 75%, rgba(1,30,44,0));
+  content: ""; position: absolute; inset: auto 0 0; height: 62%; pointer-events: none;
+  background: linear-gradient(to top, rgba(1,30,44,.62), rgba(1,30,44,.52) 40%, rgba(1,30,44,.22) 70%, rgba(1,30,44,.06) 88%, rgba(1,30,44,0));
 }
 .relais { --de: var(--craie); --a: var(--encre-nuit); background: linear-gradient(var(--de) 0 50%, var(--a) 50% 100%); }
 .relais[data-de="nuit"] { --de: var(--encre-nuit); }
 .relais[data-a="craie"] { --a: var(--craie); }
-.relais .piece-plein, .relais .ouverture-photo {
+/* tout plein cadre se fond dans son sol : jamais de bord franc */
+.plein .piece-plein, .relais .ouverture-photo {
   -webkit-mask-image: var(--fondu-haut), var(--fondu-bas); mask-image: var(--fondu-haut), var(--fondu-bas);
   -webkit-mask-composite: source-in; mask-composite: intersect;
 }
@@ -403,10 +411,10 @@ main > section, .plein { scroll-margin-top: 0; }
 .contact-ouverture { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(2rem, 5vw, 6rem); align-items: start; }
 .contact-ouverture .coord { margin-top: clamp(3rem, 8vh, 5rem); }
 .contact-ouverture .texte { margin-top: 1.6rem; }
-.contact-photo { height: calc(100svh - var(--nav-h)); margin-right: calc(var(--gout) * -1); margin-top: calc(-1 * clamp(3rem, 9vh, 6rem)); overflow: hidden;
+.contact-photo { position: sticky; top: 0; height: 100vh; height: 100svh; margin-right: calc(var(--gout) * -1); margin-top: calc(-1 * (var(--nav-h) + clamp(3rem, 9vh, 6rem))); overflow: hidden;
   -webkit-mask-image: linear-gradient(to right, transparent, #000 12%); mask-image: linear-gradient(to right, transparent, #000 12%); }
 .contact-photo img { width: 100%; height: 100%; object-fit: cover; }
-.contact-corps-seul { grid-template-columns: minmax(0, 1fr); max-width: 46rem; margin-left: auto; margin-right: 8vw; }
+.contact-tete .form { margin-top: clamp(4rem, 10vh, 6rem); max-width: 40rem; }
 
 /* ---------------------------------------------------------
    LE PIED : la nuit revient sous une dernière carte
@@ -449,9 +457,9 @@ main > section, .plein { scroll-margin-top: 0; }
 .intro .display-s { max-width: 24ch; }
 .intro .texte { margin: clamp(2rem, 5vh, 3rem) 0 0 auto; max-width: 52ch; }
 @media (min-width: 1001px) { .intro .texte { margin-left: 45%; } }
-.methode { list-style: none; margin: clamp(4rem, 10vh, 7rem) 0 0; padding: 0; display: grid; gap: clamp(3.5rem, 12vh, 8rem); }
-.methode li { max-width: 30ch; }
-.methode li:nth-child(even) { margin-left: auto; margin-right: 6vw; }
+.methode { list-style: none; margin: clamp(4rem, 10vh, 7rem) 0 0; padding: 0; display: grid; gap: clamp(2.6rem, 8vh, 5.5rem); }
+.methode .titre { max-width: 26ch; }
+.methode li:nth-child(even) { justify-self: end; margin-right: 4vw; }
 .rubrique { padding-top: 0; padding-bottom: clamp(4rem, 10vh, 7rem); }
 .rubrique > .plein, .rubrique > .paire { margin-inline: calc(var(--gout) * -1); }
 .rubrique > .plein { margin-block: clamp(4rem, 12vh, 9rem); }
@@ -549,8 +557,7 @@ html.pt-in::after { content: ""; animation: pt-ouvre 950ms var(--e-pose) 60ms bo
   .detail .legende { padding-top: 1rem; }
   .groupes { grid-template-columns: 1fr; }
   .contact-corps, .contact-ouverture { grid-template-columns: 1fr; }
-  .contact-photo { height: 70svh; margin: 3rem calc(var(--gout) * -1) 0; -webkit-mask-image: none; mask-image: none; }
-  .contact-corps-seul { margin: clamp(4rem, 10vh, 6rem) 0 0; }
+  .contact-photo { position: relative; height: 70svh; margin: 3rem calc(var(--gout) * -1) 0; -webkit-mask-image: none; mask-image: none; }
   .pied-grille { grid-template-columns: 1fr 1fr; }
   .metiers-liste { padding: 24vh var(--gout) 30vh; }
 }
