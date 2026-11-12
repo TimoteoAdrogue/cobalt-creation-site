@@ -170,7 +170,7 @@ def head(slug, b, preload=""):
 <meta property="og:image" content="{b}assets/img/hero-poster.jpg">
 <link rel="icon" href="{b}assets/img/logo-cobalt.png" type="image/png">
 {preload}<link rel="preload" href="{b}assets/fonts/cormorant-garamond-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="{b}assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{b}assets/fonts/ysabeau-office-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="{b}assets/hero.css">
 <link rel="stylesheet" href="{b}assets/site.css">
 <script>(function(d){{d.classList.add('js');try{{if(sessionStorage.getItem('v1-pt')){{sessionStorage.removeItem('v1-pt');if(!matchMedia('(prefers-reduced-motion: reduce)').matches){{d.classList.add('pt-in');setTimeout(function(){{d.classList.remove('pt-in')}},1600)}}}}}}catch(e){{}}}})(document.documentElement);</script>
